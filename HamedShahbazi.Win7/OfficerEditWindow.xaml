@@ -1,0 +1,242 @@
+﻿<Window x:Class="HamedShahbazi.Win7.OfficerEditWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ویرایش افسر"
+        Width="520"
+        Height="430"
+        MinWidth="520"
+        MinHeight="430"
+        WindowStartupLocation="CenterOwner"
+        FlowDirection="RightToLeft"
+        Background="#F4F7FB"
+        ResizeMode="NoResize">
+
+    <Grid Margin="24">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+
+        <!-- =====================================================
+             هدر
+        ====================================================== -->
+
+        <Border Grid.Row="0"
+                Background="#111827"
+                CornerRadius="14"
+                Padding="18"
+                Margin="0,0,0,22">
+
+            <Grid>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="52"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+
+                <Border Width="48"
+                        Height="48"
+                        CornerRadius="12"
+                        Background="#2563EB">
+
+                    <TextBlock Text="✏"
+                               FontSize="23"
+                               Foreground="White"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+
+                </Border>
+
+
+                <StackPanel Grid.Column="1"
+                            Margin="14,0,0,0"
+                            VerticalAlignment="Center">
+
+                    <TextBlock Text="ویرایش اطلاعات افسر"
+                               FontSize="20"
+                               FontWeight="Bold"
+                               Foreground="White"/>
+
+                    <TextBlock Text="نام و امتیاز افسر را ویرایش کنید"
+                               FontSize="12"
+                               Foreground="#94A3B8"
+                               Margin="0,5,0,0"/>
+
+                </StackPanel>
+
+            </Grid>
+
+        </Border>
+
+
+        <!-- =====================================================
+             نام افسر
+        ====================================================== -->
+
+        <StackPanel Grid.Row="1"
+                    Margin="0,0,0,18">
+
+            <TextBlock Text="نام و نام خانوادگی"
+                       FontSize="13"
+                       FontWeight="Bold"
+                       Foreground="#334155"
+                       Margin="0,0,0,7"/>
+
+            <Border Background="White"
+                    BorderBrush="#CBD5E1"
+                    BorderThickness="1"
+                    CornerRadius="10">
+
+                <TextBox x:Name="OfficerNameTextBox"
+                         Height="46"
+                         Padding="13,0"
+                         BorderThickness="0"
+                         Background="Transparent"
+                         FontSize="14"
+                         Foreground="#111827"
+                         VerticalContentAlignment="Center"/>
+
+            </Border>
+
+        </StackPanel>
+
+
+        <!-- =====================================================
+             امتیاز
+        ====================================================== -->
+
+        <StackPanel Grid.Row="2"
+                    Margin="0,0,0,18">
+
+            <TextBlock Text="امتیاز افسر"
+                       FontSize="13"
+                       FontWeight="Bold"
+                       Foreground="#334155"
+                       Margin="0,0,0,7"/>
+
+            <Border Background="White"
+                    BorderBrush="#CBD5E1"
+                    BorderThickness="1"
+                    CornerRadius="10">
+
+                <ComboBox x:Name="OfficerScoreComboBox"
+                          Height="46"
+                          Padding="10,0"
+                          BorderThickness="0"
+                          Background="Transparent"
+                          FontSize="14"
+                          Foreground="#111827"
+                          Cursor="Hand"
+                          VerticalContentAlignment="Center">
+
+                    <ComboBoxItem Content="0.5"/>
+                    <ComboBoxItem Content="1"/>
+                    <ComboBoxItem Content="2"/>
+
+                </ComboBox>
+
+            </Border>
+
+        </StackPanel>
+
+
+        <!-- =====================================================
+             فاصله
+        ====================================================== -->
+
+        <Grid Grid.Row="3"/>
+
+
+        <!-- =====================================================
+             دکمه‌ها
+        ====================================================== -->
+
+        <Grid Grid.Row="4">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+
+            <!-- انصراف -->
+
+            <Button x:Name="CancelButton"
+                    Grid.Column="0"
+                    Height="48"
+                    Content="✕   انصراف"
+                    Click="CancelButton_Click"
+                    Cursor="Hand"
+                    Background="#F1F5F9"
+                    Foreground="#475569"
+                    BorderBrush="#CBD5E1"
+                    BorderThickness="1"
+                    FontSize="13"
+                    FontWeight="Bold">
+
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10">
+
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+
+                        </Border>
+
+                    </ControlTemplate>
+                </Button.Template>
+
+            </Button>
+
+
+            <!-- ثبت -->
+
+            <Button x:Name="SaveButton"
+                    Grid.Column="2"
+                    Height="48"
+                    Content="✓   ثبت تغییرات"
+                    Click="SaveButton_Click"
+                    Cursor="Hand"
+                    Background="#2563EB"
+                    Foreground="White"
+                    BorderBrush="#2563EB"
+                    BorderThickness="0"
+                    FontSize="13"
+                    FontWeight="Bold">
+
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10">
+
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+
+                        </Border>
+
+                    </ControlTemplate>
+                </Button.Template>
+
+            </Button>
+
+        </Grid>
+
+    </Grid>
+
+</Window>
