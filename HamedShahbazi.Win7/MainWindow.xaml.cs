@@ -4733,7 +4733,20 @@ namespace HamedShahbazi.Win7
 
             border.Background =
                 System.Windows.Media.Brushes.White;
+            border.MouseEnter += delegate
+            {
+                border.Background =
+                    new System.Windows.Media.SolidColorBrush(
+                        (System.Windows.Media.Color)
+                        System.Windows.Media.ColorConverter.ConvertFromString(
+                            "#F3F6FA"));
+            };
 
+            border.MouseLeave += delegate
+            {
+                border.Background =
+                    System.Windows.Media.Brushes.White;
+            };
             border.BorderBrush =
                 new System.Windows.Media.SolidColorBrush(
                     (System.Windows.Media.Color)
@@ -4915,7 +4928,18 @@ namespace HamedShahbazi.Win7
             Button editButton =
                 new Button();
 
-            editButton.Content = "✏️";
+            editButton.Content =
+                new System.Windows.Controls.Image
+                {
+                    Width = 25,
+                    Height = 25,
+                    Stretch = System.Windows.Media.Stretch.Uniform,
+                    Source =
+                        new System.Windows.Media.Imaging.BitmapImage(
+                            new Uri(
+                                "pack://application:,,,/HamedShahbazi.Win7;component/Resources/icons8-edit-96.png",
+                                UriKind.Absolute))
+                };
             editButton.Width = 42;
             editButton.Height = 36;
 
@@ -4943,7 +4967,18 @@ namespace HamedShahbazi.Win7
             Button deleteButton =
                 new Button();
 
-            deleteButton.Content = "🗑️";
+            deleteButton.Content =
+                new System.Windows.Controls.Image
+                {
+                    Width = 20,
+                    Height = 20,
+                    Stretch = System.Windows.Media.Stretch.Uniform,
+                    Source =
+                        new System.Windows.Media.Imaging.BitmapImage(
+                            new Uri(
+                                "pack://application:,,,/HamedShahbazi.Win7;component/Resources/icons8-delete-96.png",
+                                UriKind.Absolute))
+                };
             deleteButton.Width = 42;
             deleteButton.Height = 36;
 
@@ -5324,7 +5359,7 @@ namespace HamedShahbazi.Win7
                         GetPersianWeekDay(
                             startDate.DayOfWeek) +
                         "  " +
-                        GetPersianDate(
+                        GetPersianDateForPdf(
                             startDate),
                         headerFont);
 
@@ -5356,7 +5391,7 @@ namespace HamedShahbazi.Win7
                         GetPersianWeekDay(
                             DateTime.Now.DayOfWeek) +
                         "  " +
-                        GetPersianDate(
+                        GetPersianDateForPdf(
                             DateTime.Now),
                         headerFont);
 
@@ -5957,7 +5992,11 @@ namespace HamedShahbazi.Win7
             CreateReportsPdf(
                 fileName,
                 schedule,
-                currentProgramStartDate);
+                currentProgramStartDate,
+                guardOfficers,
+                reserveOfficers,
+                chiefOfficers,
+                true);
         }
 
 
@@ -5968,7 +6007,11 @@ namespace HamedShahbazi.Win7
         private void CreateReportsPdf(
             string fileName,
             List<GuardScheduleItem> sourceSchedule,
-            DateTime startDate)
+            DateTime startDate,
+            List<Officer> reportGuardOfficers,
+            List<Officer> reportReserveOfficers,
+            List<Officer> reportChiefOfficers,
+            bool includeReplacementReport)
         {
             Document document =
                 new Document(
@@ -6005,28 +6048,13 @@ namespace HamedShahbazi.Win7
             // =====================================================
 
             List<Officer> historyGuardOfficers =
-                GetHistoryOfficers(
-                    sourceSchedule,
-                    delegate (GuardScheduleItem item)
-                    {
-                        return item.Guard;
-                    });
+                reportGuardOfficers;
 
             List<Officer> historyReserveOfficers =
-                GetHistoryOfficers(
-                    sourceSchedule,
-                    delegate (GuardScheduleItem item)
-                    {
-                        return item.Reserve;
-                    });
+                reportReserveOfficers;
 
             List<Officer> historyChiefOfficers =
-                GetHistoryOfficers(
-                    sourceSchedule,
-                    delegate (GuardScheduleItem item)
-                    {
-                        return item.Chief;
-                    });
+                reportChiefOfficers;
 
             // =====================================================
             // صفحه اول = پاسدار
@@ -6091,7 +6119,18 @@ namespace HamedShahbazi.Win7
                 baseFont,
                 "گزارش افسر سر",
                 chiefReport);
+            if (includeReplacementReport &&
+                useReplacementOfficers)
+            {
+                document.NewPage();
 
+                CreateReplacementReportPage(
+                    document,
+                    baseFont,
+                    reportGuardOfficers,
+                    reportReserveOfficers,
+                    reportChiefOfficers);
+            }
             document.Close();
             writer.Close();
         }
@@ -6242,7 +6281,7 @@ namespace HamedShahbazi.Win7
                 new PdfPCell(
                     new Phrase(
                         "تاریخ ایجاد برنامه: " +
-                        GetPersianDate(
+                        GetPersianDateForPdf(
                             currentProgramStartDate),
                         normalFont));
 
@@ -6259,7 +6298,7 @@ namespace HamedShahbazi.Win7
                 new PdfPCell(
                     new Phrase(
                         "تاریخ چاپ: " +
-                        GetPersianDate(
+                        GetPersianDateForPdf(
                             DateTime.Now),
                         normalFont));
 
@@ -6292,7 +6331,7 @@ namespace HamedShahbazi.Win7
             // =====================================================
 
             PdfPTable table =
-                new PdfPTable(5);
+                new PdfPTable(6);
 
             table.WidthPercentage =
                 100;
@@ -6303,10 +6342,11 @@ namespace HamedShahbazi.Win7
             table.SetWidths(
                 new float[]
                 {
-                    51,   // روزهای پاس
+                    14,   // وضعیت
+                    40,   // روزهای پاس
                     8,    // تعداد پاس
-                    10,   // امتیاز
-                    24,   // نام و نام خانوادگی
+                    9,    // امتیاز
+                    22,   // نام
                     7     // ردیف
                 });
 
@@ -6341,6 +6381,11 @@ namespace HamedShahbazi.Win7
                 "روزهای پاس",
                 headerFont);
 
+            AddReportHeaderCell(
+                table,
+                "وضعیت",
+                headerFont);
+
             if (reportRows != null)
             {
                 foreach (OfficerReportRow row
@@ -6370,6 +6415,10 @@ namespace HamedShahbazi.Win7
                         table,
                         row.PassDays,
                         smallFont);
+                    AddReportBodyCell(
+                        table,
+                        row.Status,
+                        smallFont);
                 }
             }
 
@@ -6379,7 +6428,258 @@ namespace HamedShahbazi.Win7
         // =====================================================
         // هدر جدول گزارش
         // =====================================================
+        private void CreateReplacementReportPage(
+    Document document,
+    BaseFont baseFont,
+    List<Officer> guardOfficers,
+    List<Officer> reserveOfficers,
+    List<Officer> chiefOfficers)
+        {
+            iTextSharp.text.Font titleFont =
+                new iTextSharp.text.Font(
+                    baseFont,
+                    17,
+                    iTextSharp.text.Font.BOLD,
+                    BaseColor.BLACK);
 
+            iTextSharp.text.Font normalFont =
+                new iTextSharp.text.Font(
+                    baseFont,
+                    8,
+                    iTextSharp.text.Font.NORMAL,
+                    BaseColor.BLACK);
+
+            iTextSharp.text.Font headerFont =
+                new iTextSharp.text.Font(
+                    baseFont,
+                    8,
+                    iTextSharp.text.Font.BOLD,
+                    BaseColor.WHITE);
+
+            // ==========================================
+            // عنوان
+            // ==========================================
+
+            PdfPTable titleTable =
+                new PdfPTable(1);
+
+            titleTable.WidthPercentage =
+                100;
+
+            titleTable.RunDirection =
+                PdfWriter.RUN_DIRECTION_RTL;
+
+            PdfPCell titleCell =
+                new PdfPCell();
+
+            titleCell.Border =
+                Rectangle.NO_BORDER;
+
+            titleCell.RunDirection =
+                PdfWriter.RUN_DIRECTION_RTL;
+
+            titleCell.HorizontalAlignment =
+                Element.ALIGN_CENTER;
+
+            Paragraph titleParagraph =
+                new Paragraph(
+                    "گزارش نیروهای جایگزین",
+                    titleFont);
+
+            titleParagraph.Alignment =
+                Element.ALIGN_CENTER;
+
+            titleCell.AddElement(
+                titleParagraph);
+
+            titleTable.AddCell(
+                titleCell);
+
+            document.Add(
+                titleTable);
+
+            document.Add(
+                new Paragraph(" "));
+
+            // ==========================================
+            // جدول
+            // ==========================================
+
+            PdfPTable table =
+                new PdfPTable(5);
+
+            table.WidthPercentage =
+                100;
+
+            table.RunDirection =
+                PdfWriter.RUN_DIRECTION_RTL;
+
+            table.SetWidths(
+                new float[]
+                {
+            15,   // وضعیت
+            18,   // سمت
+            12,   // امتیاز
+            48,   // نام
+            7     // ردیف
+                });
+
+            table.SplitRows =
+                true;
+
+            table.SplitLate =
+                false;
+
+            AddReportHeaderCell(
+                table,
+                "ردیف",
+                headerFont);
+
+            AddReportHeaderCell(
+                table,
+                "نام",
+                headerFont);
+
+            AddReportHeaderCell(
+                table,
+                "امتیاز",
+                headerFont);
+
+            AddReportHeaderCell(
+                table,
+                "سمت",
+                headerFont);
+
+            AddReportHeaderCell(
+                table,
+                "وضعیت",
+                headerFont);
+
+            int rowNumber = 1;
+
+            // ==========================================
+            // تابع افزودن جایگزین
+            // ==========================================
+
+            Action<Officer, string> addReplacement =
+                delegate (
+                    Officer officer,
+                    string role)
+                {
+                    if (officer == null)
+                        return;
+
+                    if (!officer.IsReplacement)
+                        return;
+
+                    AddReportBodyCell(
+                        table,
+                        rowNumber.ToString(),
+                        normalFont);
+
+                    AddReportBodyCell(
+                        table,
+                        officer.Name,
+                        normalFont);
+
+                    AddReportBodyCell(
+                        table,
+                        officer.Score.ToString(),
+                        normalFont);
+
+                    AddReportBodyCell(
+                        table,
+                        role,
+                        normalFont);
+
+                    AddReportBodyCell(
+                        table,
+                        "🔄 نیروی جایگزین",
+                        normalFont);
+
+                    rowNumber++;
+                };
+
+            // ==========================================
+            // پاسدار
+            // ==========================================
+
+            if (guardOfficers != null)
+            {
+                foreach (Officer officer
+                         in guardOfficers)
+                {
+                    addReplacement(
+                        officer,
+                        "افسر پاسدار");
+                }
+            }
+
+            // ==========================================
+            // جانشین
+            // ==========================================
+
+            if (reserveOfficers != null)
+            {
+                foreach (Officer officer
+                         in reserveOfficers)
+                {
+                    addReplacement(
+                        officer,
+                        "افسر جانشین");
+                }
+            }
+
+            // ==========================================
+            // افسر سر
+            // ==========================================
+
+            if (chiefOfficers != null)
+            {
+                foreach (Officer officer
+                         in chiefOfficers)
+                {
+                    addReplacement(
+                        officer,
+                        "افسر سر");
+                }
+            }
+
+            // ==========================================
+            // اگر جایگزینی وجود نداشت
+            // ==========================================
+
+            if (rowNumber == 1)
+            {
+                AddReportBodyCell(
+                    table,
+                    "-",
+                    normalFont);
+
+                AddReportBodyCell(
+                    table,
+                    "نیروی جایگزین وجود ندارد",
+                    normalFont);
+
+                AddReportBodyCell(
+                    table,
+                    "-",
+                    normalFont);
+
+                AddReportBodyCell(
+                    table,
+                    "-",
+                    normalFont);
+
+                AddReportBodyCell(
+                    table,
+                    "-",
+                    normalFont);
+            }
+
+            document.Add(
+                table);
+        }
         private void AddReportHeaderCell(
             PdfPTable table,
             string text,
@@ -6658,80 +6958,80 @@ namespace HamedShahbazi.Win7
             OtherViews.Visibility =
                 Visibility.Visible;
 
-            // ==========================================
-            // نمایش تاریخچه
-            // ==========================================
+             //==========================================
+             //نمایش تاریخچه
+             //==========================================
 
-            //bool showHistory =
-            //    title == "تاریخچه برنامه‌ها";
+            bool showHistory =
+                title == "تاریخچه برنامه‌ها";
 
-            //if (HistoryView != null)
-            //{
-            //    HistoryView.Visibility =
-            //        showHistory
-            //            ? Visibility.Visible
-            //            : Visibility.Collapsed;
-            //}
+            if (HistoryView != null)
+            {
+                HistoryView.Visibility =
+                    showHistory
+                        ? Visibility.Visible
+                        : Visibility.Collapsed;
+            }
 
-            //if (OtherViewsContent != null)
-            //{
-            //    OtherViewsContent.Visibility =
-            //        showHistory
-            //            ? Visibility.Collapsed
-            //            : Visibility.Visible;
-            //}
+            if (OtherViewsContent != null)
+            {
+                OtherViewsContent.Visibility =
+                    showHistory
+                        ? Visibility.Collapsed
+                        : Visibility.Visible;
+            }
 
-            // ==========================================
-            // حالت اولیه آکاردئون مدیریت نیروها
-            // ==========================================
+             //==========================================
+             //حالت اولیه آکاردئون مدیریت نیروها
+             //==========================================
 
-            //if (!showHistory)
-            //{
-            //    if (GuardAccordionContent != null)
-            //    {
-            //        GuardAccordionContent.Visibility =
-            //            Visibility.Visible;
-            //    }
+            if (!showHistory)
+            {
+                if (GuardAccordionContent != null)
+                {
+                    GuardAccordionContent.Visibility =
+                        Visibility.Visible;
+                }
 
-            //    if (ReserveAccordionContent != null)
-            //    {
-            //        ReserveAccordionContent.Visibility =
-            //            Visibility.Collapsed;
-            //    }
+                if (ReserveAccordionContent != null)
+                {
+                    ReserveAccordionContent.Visibility =
+                        Visibility.Collapsed;
+                }
 
-            //    if (ChiefAccordionContent != null)
-            //    {
-            //        ChiefAccordionContent.Visibility =
-            //            Visibility.Collapsed;
-            //    }
+                if (ChiefAccordionContent != null)
+                {
+                    ChiefAccordionContent.Visibility =
+                        Visibility.Collapsed;
+                }
 
-            //    if (GuardAccordionArrow != null)
-            //    {
-            //        GuardAccordionArrow.Text =
-            //            "▼";
-            //    }
+                if (GuardAccordionArrow != null)
+                {
+                    GuardAccordionArrow.Text =
+                        "▼";
+                }
 
-            //    if (ReserveAccordionArrow != null)
-            //    {
-            //        ReserveAccordionArrow.Text =
-            //            "▶";
-            //    }
+                if (ReserveAccordionArrow != null)
+                {
+                    ReserveAccordionArrow.Text =
+                        "▶";
+                }
 
-            //    if (ChiefAccordionArrow != null)
-            //    {
-            //        ChiefAccordionArrow.Text =
-            //            "▶";
-            //    }
-            //}
+                if (ChiefAccordionArrow != null)
+                {
+                    ChiefAccordionArrow.Text =
+                        "▶";
+                }
+            }
 
-            // ==========================================
-            // بارگذاری تاریخچه
-            // ==========================================
+             //==========================================
+             //بارگذاری تاریخچه
+             //==========================================
 
-            //if (showHistory)
-            //{
-            //    LoadHistoryCards();
-            //}
+            if (showHistory)
+            {
+                LoadHistoryCards();
+            }
         }
 
         private void GuardOfficerMenu_Click(
@@ -6763,6 +7063,7 @@ namespace HamedShahbazi.Win7
                 "افسر سر",
                 "بخش مدیریت و ثبت افسران سر");
         }
+
         private string GetPersianDate(DateTime date)
         {
             PersianCalendar pc =
@@ -6773,6 +7074,17 @@ namespace HamedShahbazi.Win7
                 pc.GetYear(date),
                 pc.GetMonth(date),
                 pc.GetDayOfMonth(date));
+        }
+        private string GetPersianDateForPdf(DateTime date)
+        {
+            PersianCalendar pc =
+                new PersianCalendar();
+
+            return string.Format(
+                "{0:00}/{1:00}/{2:0000}",
+                pc.GetDayOfMonth(date),
+                pc.GetMonth(date),
+                pc.GetYear(date));
         }
         private void ScheduleMenu_Click(
             object sender,
@@ -7091,7 +7403,42 @@ namespace HamedShahbazi.Win7
             }
         }
 
+        private void SavedPrograms_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            ShowOtherPage(
+                "🗂️",
+                "تاریخچه برنامه‌ها",
+                "مشاهده و مدیریت برنامه‌های ذخیره‌شده");
+        }
 
+        private void LoadHistoryCards()
+        {
+            if (HistoryProgramsContainer == null)
+                return;
+
+            HistoryProgramsContainer.Children.Clear();
+
+            if (savedPrograms == null ||
+                savedPrograms.Count == 0)
+            {
+                return;
+            }
+
+            foreach (GuardProgramHistory program
+                     in savedPrograms)
+            {
+                if (program == null)
+                    continue;
+
+                Border card =
+                    CreateHistoryProgramCard(program);
+
+                HistoryProgramsContainer.Children.Add(
+                    card);
+            }
+        }
         private Border CreateHistoryProgramCard(
     GuardProgramHistory program)
         {
@@ -7832,7 +8179,11 @@ namespace HamedShahbazi.Win7
                 CreateReportsPdf(
                     dialog.FileName,
                     program.Schedule,
-                    program.StartDate);
+                    program.StartDate,
+                    guardOfficers,
+                    reserveOfficers,
+                    chiefOfficers,
+                    true);
 
                 MessageBox.Show(
                     "PDF گزارشات این سابقه با موفقیت ایجاد شد.\n\n" +

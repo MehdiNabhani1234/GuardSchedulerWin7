@@ -60,15 +60,17 @@
                         <!-- لوگو -->
 
                         <Border Width="88"
-                        Height="88"
-                        Background="#0F172A"
-                        CornerRadius="24"
-                        HorizontalAlignment="Center">
+                                Height="88"
+                                Background="#0F172A"
+                                CornerRadius="24"
+                                HorizontalAlignment="Center">
 
-                            <TextBlock Text="🛡️"
-                               FontSize="42"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"/>
+                            <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-microsoft-defender-2025-96.png"
+                                   Width="50"
+                                   Height="50"
+                                   Stretch="Uniform"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
 
                         </Border>
 
@@ -174,7 +176,7 @@
                 <Grid>
 
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="110"/>
+                        <RowDefinition Height="150"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="92"/>
                     </Grid.RowDefinitions>
@@ -191,16 +193,18 @@
 
                         <StackPanel VerticalAlignment="Center">
 
-                            <Border Width="44"
-                        Height="44"
-                        Background="#2563EB"
-                        CornerRadius="13"
-                        HorizontalAlignment="Center">
+                            <Border Width="88"
+                                    Height="58"
+                                    Background="#0F172A"
+                                    CornerRadius="24"
+                                    HorizontalAlignment="Center">
 
-                                <TextBlock Text="🛡️"
-                               FontSize="22"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"/>
+                                <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-microsoft-defender-2025-96.png"
+                                       Width="50"
+                                       Height="50"
+                                       Stretch="Uniform"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
 
                             </Border>
 
@@ -2393,15 +2397,16 @@
 
 
                                             <Button Content="🗂️   مشاهده تاریخچه برنامه‌ها"
+                                                    Click="SavedPrograms_Click"
                            
-                            Height="50"
-                            Margin="0,20,0,0"
-                            Background="#7C3AED"
-                            Foreground="White"
-                            BorderThickness="0"
-                            FontSize="13"
-                            FontWeight="Bold"
-                            Cursor="Hand">
+                                                    Height="50"
+                                                    Margin="0,20,0,0"
+                                                    Background="#7C3AED"
+                                                    Foreground="White"
+                                                    BorderThickness="0"
+                                                    FontSize="13"
+                                                    FontWeight="Bold"
+                                                    Cursor="Hand">
 
                                                 <Button.Template>
 
@@ -2409,7 +2414,7 @@
 
                                                         <Border Background="{TemplateBinding Background}"
                                         CornerRadius="13"
-                                        Padding="18">
+                                        Padding="0">
 
                                                             <ContentPresenter
                                         HorizontalAlignment="Center"
@@ -5448,6 +5453,78 @@
              ===================================================== -->
 
 
+
+                                <!-- =====================================================
+             HISTORY VIEW
+             ===================================================== -->
+
+                                <Border x:Name="HistoryView"
+                Visibility="Collapsed"
+                Background="#F1F5F9"
+                Padding="0">
+
+                                    <StackPanel>
+
+                                        
+                            
+                                
+
+                                        <Border Background="#FFFFFF"
+                        CornerRadius="20"
+                        BorderBrush="#E2E8F0"
+                        BorderThickness="1"
+                        Padding="24"
+                        Margin="0,0,0,22">
+
+                                            <Grid FlowDirection="RightToLeft">
+
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Border Width="58"
+                                Height="58"
+                                CornerRadius="16"
+                                Background="#F3E8FF">
+
+                                                    <TextBlock Text="🗂️"
+                                       FontSize="30"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+
+                                                </Border>
+
+                                                <StackPanel Grid.Column="1"
+                                    Margin="18,0,0,0"
+                                    VerticalAlignment="Center">
+
+                                                    <TextBlock Text="تاریخچه برنامه‌ها"
+                                       FontSize="25"
+                                       FontWeight="Bold"
+                                       Foreground="#0F172A"/>
+
+                                                    <TextBlock Text="برنامه‌های قبلی ذخیره‌شده را مشاهده و خروجی PDF آنها را دریافت کنید."
+                                       FontSize="13"
+                                       Foreground="#64748B"
+                                       Margin="0,7,0,0"
+                                       TextWrapping="Wrap"/>
+
+                                                </StackPanel>
+
+                                            </Grid>
+
+                                        </Border>
+
+                                        
+                                
+
+                                        <StackPanel x:Name="HistoryProgramsContainer"
+                            FlowDirection="RightToLeft"/>
+
+                                    </StackPanel>
+
+                                </Border>
 
 
                                 <!-- =====================================================

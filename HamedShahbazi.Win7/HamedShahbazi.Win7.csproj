@@ -113,5 +113,12 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icons8-delete-96.png" />
+    <Resource Include="Resources\icons8-edit-96.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icons8-microsoft-defender-2025-96.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
