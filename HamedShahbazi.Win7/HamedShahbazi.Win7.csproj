@@ -34,6 +34,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>appicon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.9.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
       <HintPath>..\packages\BouncyCastle.1.8.9\lib\BouncyCastle.Crypto.dll</HintPath>
@@ -119,6 +122,48 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\icons8-microsoft-defender-2025-96.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\appicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="appicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icons8-add-list-96.png" />
+    <Resource Include="Resources\icons8-calendar-96.png" />
+    <Resource Include="Resources\icons8-change-user-96.png" />
+    <Resource Include="Resources\icons8-conference-96.png" />
+    <Resource Include="Resources\icons8-confetti-96.png" />
+    <Resource Include="Resources\icons8-dashboard-96.png" />
+    <Resource Include="Resources\icons8-event-accepted-tentatively-96.png" />
+    <Resource Include="Resources\icons8-police-skin-type-4-96.png" />
+    <Resource Include="Resources\icons8-report-card-96.png" />
+    <Resource Include="Resources\icons8-setting-96.png" />
+    <Resource Include="Resources\icons8-system-information-96.png" />
+    <Resource Include="Resources\icons8-tear-off-calendar-96.png" />
+    <Resource Include="Resources\icons8-think-do-96.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icons8-checked-identification-documents-96.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icons8-product-documents-96.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icons8-order-history-96.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icons8-low-importance-96.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icons8-rating-96.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icons8-pass-fail-96.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icons8-pdf-96.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Xml.Serialization;
 using Microsoft.Win32;
-
+using System.Windows.Media.Imaging;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 namespace HamedShahbazi.Win7
@@ -313,6 +313,8 @@ namespace HamedShahbazi.Win7
             public Border Card { get; set; }
 
             public TextBlock DayLabel { get; set; }
+
+            public System.Windows.Controls.Image DayIcon { get; set; }
 
             public TextBlock DateLabel { get; set; }
 
@@ -651,7 +653,7 @@ namespace HamedShahbazi.Win7
             return false;
         }
         private GuideCardUI CreateGuideCard(
-            string icon,
+            string iconPath,
             string title,
             string color)
         {
@@ -727,20 +729,23 @@ namespace HamedShahbazi.Win7
             headerPanel.VerticalAlignment =
                 VerticalAlignment.Center;
 
+            System.Windows.Controls.Image iconImage =
+                new System.Windows.Controls.Image();
 
-            TextBlock iconLabel =
-                new TextBlock();
+            iconImage.Width = 23;
+            iconImage.Height = 23;
+            iconImage.Stretch =
+                System.Windows.Media.Stretch.Uniform;
 
-            iconLabel.Text =
-                icon;
-
-            iconLabel.FontSize =
-                23;
-
-            iconLabel.VerticalAlignment =
+            iconImage.VerticalAlignment =
                 VerticalAlignment.Center;
 
-
+            iconImage.Source =
+                new BitmapImage(
+                    new Uri(
+                        "pack://application:,,,/HamedShahbazi.Win7;component/Resources/"
+                        + iconPath,
+                        UriKind.Absolute));
             TextBlock titleLabel =
                 new TextBlock();
 
@@ -763,7 +768,7 @@ namespace HamedShahbazi.Win7
                 new Thickness(9, 0, 0, 0);
 
 
-            headerPanel.Children.Add(iconLabel);
+            headerPanel.Children.Add(iconImage);
             headerPanel.Children.Add(titleLabel);
 
             header.Child =
@@ -1237,7 +1242,7 @@ namespace HamedShahbazi.Win7
 
             guardGuideCard =
                 CreateGuideCard(
-                    "👮",
+                    "icons8-police-skin-type-4-96.png",
                     "افسر پاسدار",
                     "#2563EB");
 
@@ -1255,7 +1260,7 @@ namespace HamedShahbazi.Win7
 
             reserveGuideCard =
                 CreateGuideCard(
-                    "🔄",
+                    "icons8-change-user-96.png",
                     "افسر جانشین",
                     "#059669");
 
@@ -1273,7 +1278,7 @@ namespace HamedShahbazi.Win7
 
             chiefGuideCard =
                 CreateGuideCard(
-                    "⭐",
+                    "icons8-rating-96.png",
                     "افسر سر",
                     "#D97706");
 
@@ -1595,6 +1600,7 @@ namespace HamedShahbazi.Win7
                 new TextBlock();
 
             dayLabel.FontSize = 17;
+
             dayLabel.FontWeight =
                 FontWeights.Bold;
 
@@ -1604,9 +1610,31 @@ namespace HamedShahbazi.Win7
                     System.Windows.Media.ColorConverter
                         .ConvertFromString("#0F172A"));
 
-            Grid.SetColumn(
-                dayLabel,
-                0);
+            dayLabel.VerticalAlignment =
+                VerticalAlignment.Center;
+
+
+            System.Windows.Controls.Image dayIcon =
+                new System.Windows.Controls.Image();
+
+            dayIcon.Source =
+                new BitmapImage(
+                    new Uri(
+                        "pack://application:,,,/HamedShahbazi.Win7;component/Resources/icons8-tear-off-calendar-96.png",
+                        UriKind.Absolute));
+
+            dayIcon.Width = 20;
+
+            dayIcon.Height = 20;
+
+            dayIcon.Stretch =
+                System.Windows.Media.Stretch.Uniform;
+
+            dayIcon.VerticalAlignment =
+                VerticalAlignment.Center;
+
+            dayIcon.Margin =
+                new Thickness(0, 0, 6, 0);
 
 
             TextBlock dateLabel =
@@ -1627,9 +1655,31 @@ namespace HamedShahbazi.Win7
                 dateLabel,
                 1);
 
+            StackPanel dayHeader =
+                new StackPanel();
 
-            header.Children.Add(dayLabel);
-            header.Children.Add(dateLabel);
+            dayHeader.Orientation =
+                Orientation.Horizontal;
+
+            dayHeader.FlowDirection =
+                FlowDirection.RightToLeft;
+
+            dayHeader.VerticalAlignment =
+                VerticalAlignment.Center;
+
+            dayHeader.Children.Add(
+                dayIcon);
+
+            dayHeader.Children.Add(
+                dayLabel);
+
+            Grid.SetColumn(
+                dayHeader,
+                0);
+
+            header.Children.Add(
+                dateLabel);
+            header.Children.Add(dayHeader);
 
             layout.Children.Add(header);
 
@@ -1710,6 +1760,7 @@ namespace HamedShahbazi.Win7
 
             dayUI.Card = dayCard;
             dayUI.DayLabel = dayLabel;
+            dayUI.DayIcon = dayIcon;
             dayUI.DateLabel = dateLabel;
             dayUI.HolidayLabel = holidayLabel;
 
@@ -2222,6 +2273,92 @@ namespace HamedShahbazi.Win7
             SaveSettings();
             SaveCurrentProgram();
         }
+        private void ApplyResponsiveScheduleLayout()
+        {
+            if (scheduleGrid == null)
+                return;
+
+            double availableWidth =
+                scheduleGrid.ActualWidth;
+
+            int columns;
+
+            // فضای بزرگ → ۳ کارت
+            if (availableWidth >= 1200)
+            {
+                columns = 3;
+            }
+            // فضای کوچک‌تر → ۲ کارت
+            else
+            {
+                columns = 2;
+            }
+
+            if (scheduleGrid.ColumnDefinitions.Count == columns)
+            {
+                // حتی اگر تعداد ستون تغییر نکرده،
+                // جای کارت‌ها را دوباره تنظیم می‌کنیم.
+            }
+            else
+            {
+                scheduleGrid.ColumnDefinitions.Clear();
+
+                for (int i = 0; i < columns; i++)
+                {
+                    scheduleGrid.ColumnDefinitions.Add(
+                        new ColumnDefinition
+                        {
+                            Width =
+                                new GridLength(
+                                    1,
+                                    GridUnitType.Star)
+                        });
+                }
+            }
+
+            scheduleGrid.RowDefinitions.Clear();
+
+            int position = 0;
+
+            foreach (UIElement child
+                     in scheduleGrid.Children)
+            {
+                int row =
+                    position / columns;
+
+                int column =
+                    position % columns;
+
+                Grid.SetRow(
+                    child,
+                    row);
+
+                Grid.SetColumn(
+                    child,
+                    column);
+
+                position++;
+            }
+
+            int requiredRows =
+                (scheduleGrid.Children.Count + columns - 1)
+                / columns;
+
+            for (int i = 0; i < requiredRows; i++)
+            {
+                scheduleGrid.RowDefinitions.Add(
+                    new RowDefinition
+                    {
+                        Height = GridLength.Auto
+                    });
+            }
+        }
+        private void ScheduleGrid_SizeChanged(
+            object sender,
+            SizeChangedEventArgs e)
+        {
+            ApplyResponsiveScheduleLayout();
+        }
         private void ShowSchedule()
         {
             if (schedule == null ||
@@ -2247,7 +2384,8 @@ namespace HamedShahbazi.Win7
 
             scheduleGrid.Margin =
                 new Thickness(0);
-
+            scheduleGrid.SizeChanged +=
+                ScheduleGrid_SizeChanged;
 
             // سه ستون
             for (int i = 0; i < 3; i++)
@@ -2283,7 +2421,7 @@ namespace HamedShahbazi.Win7
             ScheduleContainer.Children.Add(
                 scheduleGrid);
 
-
+            ApplyResponsiveScheduleLayout();
             isScheduleUIInitialized =
                 true;
 
@@ -2333,8 +2471,7 @@ namespace HamedShahbazi.Win7
                 // ==============================
 
                 dayUI.DayLabel.Text =
-                    "📅 روز " + day;
-
+                    "روز " + day;
 
                 // ==============================
                 // تاریخ و روز هفته
@@ -7162,7 +7299,13 @@ namespace HamedShahbazi.Win7
                 ReportsLoadingOverlay.Visibility =
                     Visibility.Visible;
 
+                ReportsView.UpdateLayout();
+                ReportsContent.UpdateLayout();
+                ReportsLoadingOverlay.UpdateLayout();
 
+                await Dispatcher.InvokeAsync(
+                    () => { },
+                    System.Windows.Threading.DispatcherPriority.Render);
                 // =====================================================
                 // مرحله 4 - Reset کامل Loader
                 // =====================================================
@@ -7330,6 +7473,10 @@ namespace HamedShahbazi.Win7
                         ReportsContent.UpdateLayout();
                         ReportsView.UpdateLayout();
                     },
+                    System.Windows.Threading.DispatcherPriority.Loaded);
+
+                await Dispatcher.InvokeAsync(
+                    () => { },
                     System.Windows.Threading.DispatcherPriority.Render);
 
 
@@ -7343,32 +7490,42 @@ namespace HamedShahbazi.Win7
                     System.Windows.Threading.DispatcherPriority.Render);
 
 
-                await Task.Delay(50);
+                await Task.Delay(80);
 
-
-                // =====================================================
-                // حالا واقعاً گزارش آماده است
-                // =====================================================
+                await Dispatcher.InvokeAsync(
+                    () => { },
+                    System.Windows.Threading.DispatcherPriority.Render);
 
                 await UpdateReportProgress(
                     100,
                     "گزارش‌ها با موفقیت آماده شدند ✓",
                     "تکمیل شد");
 
+                await Dispatcher.InvokeAsync(
+                    () =>
+                    {
+                        ReserveReportGrid.UpdateLayout();
+                        ChiefReportGrid.UpdateLayout();
+                        GuardReportGrid.UpdateLayout();
 
-                // =====================================================
-                // Render نهایی
-                // =====================================================
+                        if (ReplacementReportGrid != null &&
+                            ReplacementReportSection != null &&
+                            ReplacementReportSection.Visibility ==
+                            Visibility.Visible)
+                        {
+                            ReplacementReportGrid.UpdateLayout();
+                        }
+
+                        ReportsContent.UpdateLayout();
+                        ReportsView.UpdateLayout();
+                    },
+                    System.Windows.Threading.DispatcherPriority.Render);
 
                 await Dispatcher.InvokeAsync(
                     () => { },
                     System.Windows.Threading.DispatcherPriority.Render);
 
-
-                // =====================================================
-                // Loader را پنهان کن
-                // فقط وقتی جدول‌ها آماده‌اند
-                // =====================================================
+                await Task.Delay(80);
 
                 ReportsLoadingOverlay.Visibility =
                     Visibility.Collapsed;
@@ -7660,28 +7817,28 @@ namespace HamedShahbazi.Win7
             AddHistoryInfoBox(
                 infoGrid,
                 0,
-                "📅",
+                "icons8-calendar-96.png",
                 "تاریخ شروع",
                 GetPersianDate(program.StartDate));
 
             AddHistoryInfoBox(
                 infoGrid,
                 1,
-                "👮",
+                "icons8-checked-identification-documents-96.png",
                 "تعداد پاس",
                 program.PassCount.ToString());
 
             AddHistoryInfoBox(
                 infoGrid,
                 2,
-                "📆",
+                "icons8-confetti-96.png",
                 "تعطیلات رسمی",
                 program.HolidayCount.ToString());
 
             AddHistoryInfoBox(
                 infoGrid,
                 3,
-                "🔄",
+                "icons8-change-user-96.png",
                 "جایگزین",
                 program.ReplacementEnabled
                     ? program.ReplacementCount.ToString()
@@ -7690,7 +7847,7 @@ namespace HamedShahbazi.Win7
             AddHistoryInfoBox(
                 infoGrid,
                 4,
-                "🗓️",
+                "icons8-tear-off-calendar-96.png",
                 "تعداد روز",
                 program.ProgramDays.ToString());
 
@@ -7728,7 +7885,7 @@ namespace HamedShahbazi.Win7
 
             Button scheduleButton =
                 CreateHistoryPdfButton(
-                    "📄  PDF برنامه نگهبانی",
+                    "  PDF برنامه نگهبانی",
                     "#FFF6F6",
                     "#FECACA",
                     "#DC2626");
@@ -7747,7 +7904,7 @@ namespace HamedShahbazi.Win7
                 scheduleButton);
             Button deleteButton =
                 CreateHistoryPdfButton(
-                    "🗑️  حذف برنامه",
+                    "  حذف برنامه",
                     "#FFF1F2",
                     "#FECDD3",
                     "#E11D48");
@@ -7766,7 +7923,7 @@ namespace HamedShahbazi.Win7
                 deleteButton);
             Button reportsButton =
                 CreateHistoryPdfButton(
-                    "📊  PDF گزارشات",
+                    " PDF گزارشات",
                     "#F2FBF7",
                     "#A7F3D0",
                     "#059669");
@@ -7836,12 +7993,24 @@ namespace HamedShahbazi.Win7
                         FlowDirection.RightToLeft
                 };
 
-            TextBlock iconText =
-                new TextBlock
-                {
-                    Text = icon,
-                    FontSize = 18
-                };
+            System.Windows.Controls.Image iconImage =
+                new System.Windows.Controls.Image();
+
+            iconImage.Width = 24;
+            iconImage.Height = 24;
+
+            iconImage.Stretch =
+                System.Windows.Media.Stretch.Uniform;
+
+            iconImage.HorizontalAlignment =
+                HorizontalAlignment.Left;
+
+            iconImage.Source =
+                new BitmapImage(
+                    new Uri(
+                        "pack://application:,,,/HamedShahbazi.Win7;component/Resources/"
+                        + icon,
+                        UriKind.Absolute));
 
             TextBlock titleText =
                 new TextBlock
@@ -7870,7 +8039,7 @@ namespace HamedShahbazi.Win7
                         new Thickness(0, 3, 0, 0)
                 };
 
-            panel.Children.Add(iconText);
+            panel.Children.Add(iconImage);
             panel.Children.Add(titleText);
             panel.Children.Add(valueText);
 

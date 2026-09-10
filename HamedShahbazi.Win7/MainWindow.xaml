@@ -1,4 +1,5 @@
 ﻿<Window x:Class="HamedShahbazi.Win7.MainWindow"
+        Icon="/HamedShahbazi.Win7;component/Resources/appicon.ico"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="سامانه مدیریت برنامه نگهبانی"
@@ -97,7 +98,7 @@
 
                         <!-- دکمه تنظیمات -->
 
-                        <Button Content="⚙️   تنظیمات برنامه"
+                        <Button Content="   تنظیمات برنامه"
                         Click="OpenSettings_Click"
                         Height="54"
                         Background="#0F172A"
@@ -112,7 +113,7 @@
 
                         <!-- دکمه شروع -->
 
-                        <Button Content="▶   شروع برنامه"
+                        <Button Content=" شروع برنامه"
                         Click="StartProgram_Click"
                         Height="54"
                         Background="#2563EB"
@@ -279,14 +280,12 @@
                 VerticalAlignment="Center">
 
                                     <!-- آیکون داشبورد -->
-                                    <TextBlock Text="▦"
-                   FontFamily="Segoe UI Symbol"
-                   FontSize="21"
-                   FontWeight="Bold"
-                   Foreground="#60A5FA"
-                   VerticalAlignment="Center"
-                   Width="34"
-                   TextAlignment="Center"/>
+                                    <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-dashboard-96.png"
+                                           Width="21"
+                                           Height="21"
+                                           Stretch="Uniform"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
 
                                     <!-- متن -->
                                     <TextBlock Text="داشبورد"
@@ -343,14 +342,12 @@
                 VerticalAlignment="Center">
 
                                     <!-- آیکون -->
-                                    <TextBlock Text="⚙"
-                   FontFamily="Segoe UI Symbol"
-                   FontSize="21"
-                   FontWeight="Bold"
-                   Foreground="#A78BFA"
-                   VerticalAlignment="Center"
-                   Width="34"
-                   TextAlignment="Center"/>
+                                    <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-setting-96.png"
+                                           Width="21"
+                                           Height="21"
+                                           Stretch="Uniform"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
 
                                     <!-- متن -->
                                     <TextBlock Text="تنظیمات"
@@ -406,15 +403,12 @@
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Center">
 
-                                    <!-- آیکون -->
-                                    <TextBlock Text="♟"
-                   FontFamily="Segoe UI Symbol"
-                   FontSize="23"
-                   FontWeight="Bold"
-                   Foreground="#34D399"
-                   VerticalAlignment="Center"
-                   Width="34"
-                   TextAlignment="Center"/>
+                                    <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-police-skin-type-4-96.png"
+                                           Width="21"
+                                           Height="21"
+                                           Stretch="Uniform"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
 
                                     <!-- متن -->
                                     <TextBlock Text="مدیریت افسرها"
@@ -471,14 +465,12 @@
                 VerticalAlignment="Center">
 
                                     <!-- آیکون -->
-                                    <TextBlock Text="✦"
-                   FontFamily="Segoe UI Symbol"
-                   FontSize="23"
-                   FontWeight="Bold"
-                   Foreground="#60A5FA"
-                   VerticalAlignment="Center"
-                   Width="34"
-                   TextAlignment="Center"/>
+                                    <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-add-list-96.png"
+                                           Width="21"
+                                           Height="21"
+                                           Stretch="Uniform"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
 
                                     <!-- متن -->
                                     <TextBlock Text="ایجاد برنامه"
@@ -535,14 +527,12 @@
                 VerticalAlignment="Center">
 
                                     <!-- آیکون -->
-                                    <TextBlock Text="▣"
-                   FontFamily="Segoe UI Symbol"
-                   FontSize="22"
-                   FontWeight="Bold"
-                   Foreground="#FBBF24"
-                   VerticalAlignment="Center"
-                   Width="34"
-                   TextAlignment="Center"/>
+                                    <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-calendar-96.png"
+                                           Width="21"
+                                           Height="21"
+                                           Stretch="Uniform"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
 
                                     <!-- متن -->
                                     <TextBlock Text="برنامه نگهبانی"
@@ -600,12 +590,12 @@
 
                                     <!-- آیکون رنگی -->
 
-                                    <TextBlock Grid.Column="0"
-                                               Text="📖"
-                                               FontSize="21"
-                                               Foreground="#A78BFA"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"/>
+                                    <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-think-do-96.png"
+                                           Width="21"
+                                           Height="21"
+                                           Stretch="Uniform"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
 
 
                                     <!-- متن -->
@@ -663,14 +653,12 @@
                 VerticalAlignment="Center">
 
                                     <!-- آیکون -->
-                                    <TextBlock Text="▥"
-                   FontFamily="Segoe UI Symbol"
-                   FontSize="22"
-                   FontWeight="Bold"
-                   Foreground="#FB7185"
-                   VerticalAlignment="Center"
-                   Width="34"
-                   TextAlignment="Center"/>
+                                    <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-report-card-96.png"
+                                           Width="21"
+                                           Height="21"
+                                           Stretch="Uniform"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
 
                                     <!-- متن -->
                                     <TextBlock Text="گزارش‌ها"
@@ -1006,32 +994,49 @@
             Margin="0,0,8,0"
             FlowDirection="RightToLeft">
 
-                                                <StackPanel>
+                                                <Grid FlowDirection="RightToLeft">
 
-                                                    <!-- آیکون بدون پس‌زمینه -->
-                                                    <TextBlock Text="▣"
-                       FontFamily="Segoe UI Symbol"
-                       FontSize="30"
-                       FontWeight="Bold"
-                       Foreground="#2563EB"
-                       HorizontalAlignment="Left"/>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
 
-                                                    <TextBlock Text="روزهای برنامه"
-                       FontSize="12"
-                       Foreground="#64748B"
-                       Margin="0,10,0,0"/>
+                                                    <Image Grid.Column="0"
+                                                           Source="/HamedShahbazi.Win7;component/Resources/icons8-tear-off-calendar-96.png"
+                                                           Width="52"
+                                                           Height="52"
+                                                           Stretch="Uniform"
+                                                           HorizontalAlignment="Right"
+                                                           VerticalAlignment="Center"/>
 
-                                                    <TextBlock x:Name="DashboardDaysLabel"
-                       Text="31"
-                       FontSize="31"
-                       FontWeight="Bold"
-                       Foreground="#2563EB"/>
+                                                    <StackPanel Grid.Column="1"
+                                                                Margin="14,0,0,0"
+                                                                VerticalAlignment="Center"
+                                                                HorizontalAlignment="Right">
 
-                                                    <TextBlock Text="روز"
-                       FontSize="11"
-                       Foreground="#64748B"/>
+                                                        <TextBlock Text="روزهای برنامه"
+                                                                   FontSize="12"
+                                                                   Foreground="#64748B"/>
 
-                                                </StackPanel>
+                                                        <StackPanel Orientation="Horizontal">
+
+                                                            <TextBlock x:Name="DashboardDaysLabel"
+                                                                       Text="31"
+                                                                       FontSize="27"
+                                                                       FontWeight="Bold"
+                                                                       Foreground="#2563EB"/>
+
+                                                            <TextBlock Text="روز"
+                                                                       FontSize="11"
+                                                                       Foreground="#64748B"
+                                                                       VerticalAlignment="Bottom"
+                                                                       Margin="6,0,0,4"/>
+
+                                                        </StackPanel>
+
+                                                    </StackPanel>
+
+                                                </Grid>
 
                                             </Border>
 
@@ -1041,40 +1046,57 @@
          ===================================================== -->
 
                                             <Border Grid.Column="1"
-            Background="#F5F3FF"
-            BorderBrush="#DDD6FE"
-            BorderThickness="1"
-            CornerRadius="18"
-            Padding="18"
-            Margin="7,0"
-            FlowDirection="RightToLeft">
+                                                    Background="#F5F3FF"
+                                                    BorderBrush="#DDD6FE"
+                                                    BorderThickness="1"
+                                                    CornerRadius="20"
+                                                    Padding="22"
+                                                    Margin="0,0,8,0"
+                                                    FlowDirection="RightToLeft">
 
-                                                <StackPanel>
+                                                <Grid FlowDirection="RightToLeft">
 
-                                                    <!-- آیکون بدون پس‌زمینه -->
-                                                    <TextBlock Text="♟"
-                       FontFamily="Segoe UI Symbol"
-                       FontSize="31"
-                       FontWeight="Bold"
-                       Foreground="#7C3AED"
-                       HorizontalAlignment="Left"/>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
 
-                                                    <TextBlock Text="کل نیروها"
-                       FontSize="12"
-                       Foreground="#64748B"
-                       Margin="0,10,0,0"/>
+                                                    <Image Grid.Column="0"
+                                                           Source="/HamedShahbazi.Win7;component/Resources/icons8-conference-96.png"
+                                                           Width="52"
+                                                           Height="52"
+                                                           Stretch="Uniform"
+                                                           HorizontalAlignment="Right"
+                                                           VerticalAlignment="Center"/>
 
-                                                    <TextBlock x:Name="DashboardOfficersLabel"
-                       Text="0"
-                       FontSize="27"
-                       FontWeight="Bold"
-                       Foreground="#7C3AED"/>
+                                                    <StackPanel Grid.Column="1"
+                                                                Margin="14,0,0,0"
+                                                                VerticalAlignment="Center"
+                                                                HorizontalAlignment="Right">
 
-                                                    <TextBlock Text="نفر"
-                       FontSize="11"
-                       Foreground="#64748B"/>
+                                                        <TextBlock Text="کل نیروها"
+                                                                   FontSize="12"
+                                                                   Foreground="#64748B"/>
 
-                                                </StackPanel>
+                                                        <StackPanel Orientation="Horizontal">
+
+                                                            <TextBlock x:Name="DashboardOfficersLabel"
+                                                                       Text="0"
+                                                                       FontSize="27"
+                                                                       FontWeight="Bold"
+                                                                       Foreground="#7C3AED"/>
+
+                                                            <TextBlock Text="نفر"
+                                                                       FontSize="11"
+                                                                       Foreground="#64748B"
+                                                                       VerticalAlignment="Bottom"
+                                                                       Margin="6,0,0,4"/>
+
+                                                        </StackPanel>
+
+                                                    </StackPanel>
+
+                                                </Grid>
 
                                             </Border>
 
@@ -1084,40 +1106,57 @@
          ===================================================== -->
 
                                             <Border Grid.Column="2"
-            Background="#ECFDF5"
-            BorderBrush="#A7F3D0"
-            BorderThickness="1"
-            CornerRadius="18"
-            Padding="18"
-            Margin="7,0"
-            FlowDirection="RightToLeft">
+                                                    Background="#ECFDF5"
+                                                    BorderBrush="#A7F3D0"
+                                                    BorderThickness="1"
+                                                    CornerRadius="20"
+                                                    Padding="22"
+                                                    Margin="0,0,8,0"
+                                                    FlowDirection="RightToLeft">
 
-                                                <StackPanel>
+                                                <Grid FlowDirection="RightToLeft">
 
-                                                    <!-- آیکون بدون پس‌زمینه -->
-                                                    <TextBlock Text="↻"
-                       FontFamily="Segoe UI Symbol"
-                       FontSize="32"
-                       FontWeight="Bold"
-                       Foreground="#059669"
-                       HorizontalAlignment="Left"/>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
 
-                                                    <TextBlock Text="نیروی جایگزین"
-                       FontSize="12"
-                       Foreground="#64748B"
-                       Margin="0,10,0,0"/>
+                                                    <Image Grid.Column="0"
+                                                           Source="/HamedShahbazi.Win7;component/Resources/icons8-change-user-96.png"
+                                                           Width="52"
+                                                           Height="52"
+                                                           Stretch="Uniform"
+                                                           HorizontalAlignment="Right"
+                                                           VerticalAlignment="Center"/>
 
-                                                    <TextBlock x:Name="DashboardReplacementLabel"
-                       Text="0"
-                       FontSize="27"
-                       FontWeight="Bold"
-                       Foreground="#059669"/>
+                                                    <StackPanel Grid.Column="1"
+                                                                Margin="14,0,0,0"
+                                                                VerticalAlignment="Center"
+                                                                HorizontalAlignment="Right">
 
-                                                    <TextBlock Text="نفر"
-                       FontSize="11"
-                       Foreground="#64748B"/>
+                                                        <TextBlock Text="نیروی جایگزین"
+                                                                   FontSize="12"
+                                                                   Foreground="#64748B"/>
 
-                                                </StackPanel>
+                                                        <StackPanel Orientation="Horizontal">
+
+                                                            <TextBlock x:Name="DashboardReplacementLabel"
+                                                                       Text="0"
+                                                                       FontSize="27"
+                                                                       FontWeight="Bold"
+                                                                       Foreground="#059669"/>
+
+                                                            <TextBlock Text="نفر"
+                                                                       FontSize="11"
+                                                                       Foreground="#64748B"
+                                                                       VerticalAlignment="Bottom"
+                                                                       Margin="6,0,0,4"/>
+
+                                                        </StackPanel>
+
+                                                    </StackPanel>
+
+                                                </Grid>
 
                                             </Border>
 
@@ -1127,40 +1166,46 @@
          ===================================================== -->
 
                                             <Border Grid.Column="3"
-            Background="#FFF7ED"
-            BorderBrush="#FED7AA"
-            BorderThickness="1"
-            CornerRadius="18"
-            Padding="18"
-            Margin="7,0,0,0"
-            FlowDirection="RightToLeft">
+                                                    Background="#FFF7ED"
+                                                    BorderBrush="#FED7AA"
+                                                    BorderThickness="1"
+                                                    CornerRadius="20"
+                                                    Padding="22"
+                                                    FlowDirection="RightToLeft">
 
-                                                <StackPanel>
+                                                <Grid FlowDirection="RightToLeft">
 
-                                                    <!-- آیکون بدون پس‌زمینه -->
-                                                    <TextBlock Text="⬢"
-                       FontFamily="Segoe UI Symbol"
-                       FontSize="29"
-                       FontWeight="Bold"
-                       Foreground="#EA580C"
-                       HorizontalAlignment="Left"/>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
 
-                                                    <TextBlock Text="وضعیت برنامه"
-                       FontSize="12"
-                       Foreground="#64748B"
-                       Margin="0,10,0,0"/>
+                                                    <Image Grid.Column="0"
+                                                           Source="/HamedShahbazi.Win7;component/Resources/icons8-system-information-96.png"
+                                                           Width="52"
+                                                           Height="52"
+                                                           Stretch="Uniform"
+                                                           HorizontalAlignment="Right"
+                                                           VerticalAlignment="Center"/>
 
-                                                    <TextBlock x:Name="DashboardProgramStatusLabel"
-                       Text="فعال"
-                       FontSize="20"
-                       FontWeight="Bold"
-                       Foreground="#EA580C"/>
+                                                    <StackPanel Grid.Column="1"
+                                                                Margin="14,0,0,0"
+                                                                VerticalAlignment="Center"
+                                                                HorizontalAlignment="Right">
 
-                                                    <TextBlock Text="وضعیت فعلی"
-                       FontSize="11"
-                       Foreground="#64748B"/>
+                                                        <TextBlock Text="وضعیت برنامه"
+                                                                   FontSize="12"
+                                                                   Foreground="#64748B"/>
 
-                                                </StackPanel>
+                                                        <TextBlock x:Name="DashboardProgramStatusLabel"
+                                                                   Text="فعال"
+                                                                   FontSize="20"
+                                                                   FontWeight="Bold"
+                                                                   Foreground="#EA580C"/>
+
+                                                    </StackPanel>
+
+                                                </Grid>
 
                                             </Border>
 
@@ -1204,35 +1249,57 @@
          ===================================================== -->
 
                                             <Border Grid.Column="0"
-            Background="#FFFFFF"
-            BorderBrush="#BFDBFE"
-            BorderThickness="1"
-            CornerRadius="18"
-            Padding="20"
-            Margin="0,0,8,0">
+                                                    Background="#EFF6FF"
+                                                    BorderBrush="#BFDBFE"
+                                                    BorderThickness="1"
+                                                    CornerRadius="20"
+                                                    Padding="22"
+                                                    Margin="0,0,8,0"
+                                                    FlowDirection="RightToLeft">
 
-                                                <StackPanel>
+                                                <Grid FlowDirection="RightToLeft">
 
-                                                    <!-- آیکون بدون پس‌زمینه -->
-                                                    <TextBlock Text="◎"
-                       FontFamily="Segoe UI Symbol"
-                       FontSize="31"
-                       FontWeight="Bold"
-                       Foreground="#2563EB"
-                       HorizontalAlignment="Left"/>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
 
-                                                    <TextBlock Text="تعداد کل پاس"
-                       FontSize="12"
-                       Foreground="#64748B"
-                       Margin="0,10,0,0"/>
+                                                    <Image Grid.Column="0"
+                                                           Source="/HamedShahbazi.Win7;component/Resources/icons8-checked-identification-documents-96.png"
+                                                           Width="52"
+                                                           Height="52"
+                                                           Stretch="Uniform"
+                                                           HorizontalAlignment="Right"
+                                                           VerticalAlignment="Center"/>
 
-                                                    <TextBlock x:Name="DashboardPassCountLabel"
-                       Text="0"
-                       FontSize="25"
-                       FontWeight="Bold"
-                       Foreground="#2563EB"/>
+                                                    <StackPanel Grid.Column="1"
+                                                                Margin="14,0,0,0"
+                                                                VerticalAlignment="Center"
+                                                                HorizontalAlignment="Right">
 
-                                                </StackPanel>
+                                                        <TextBlock Text="تعداد کل پاس"
+                                                                   FontSize="12"
+                                                                   Foreground="#64748B"/>
+
+                                                        <StackPanel Orientation="Horizontal">
+
+                                                            <TextBlock x:Name="DashboardPassCountLabel"
+                                                                       Text="0"
+                                                                       FontSize="25"
+                                                                       FontWeight="Bold"
+                                                                       Foreground="#2563EB"/>
+
+                                                            <TextBlock Text="پاس"
+                                                                       FontSize="11"
+                                                                       Foreground="#64748B"
+                                                                       VerticalAlignment="Bottom"
+                                                                       Margin="6,0,0,4"/>
+
+                                                        </StackPanel>
+
+                                                    </StackPanel>
+
+                                                </Grid>
 
                                             </Border>
 
@@ -1240,77 +1307,97 @@
                                             <!-- =====================================================
          تعطیلات
          ===================================================== -->
-
                                             <Border Grid.Column="1"
-            Background="#FFF7ED"
-            BorderBrush="#FED7AA"
-            BorderThickness="1"
-            CornerRadius="18"
-            Padding="20"
-            Margin="8,0"
-            FlowDirection="RightToLeft">
+                                                    Background="#FFF7ED"
+                                                    BorderBrush="#FED7AA"
+                                                    BorderThickness="1"
+                                                    CornerRadius="20"
+                                                    Padding="22"
+                                                    Margin="0,0,8,0"
+                                                    FlowDirection="RightToLeft">
 
-                                                <StackPanel>
+                                                <Grid FlowDirection="RightToLeft">
 
-                                                    <!-- آیکون بدون پس‌زمینه -->
-                                                    <TextBlock Text="☀"
-                       FontFamily="Segoe UI Symbol"
-                       FontSize="31"
-                       FontWeight="Bold"
-                       Foreground="#D97706"
-                       HorizontalAlignment="Left"/>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
 
-                                                    <TextBlock Text="تعطیلات"
-                       FontSize="12"
-                       Foreground="#64748B"
-                       Margin="0,10,0,0"/>
+                                                    <Image Grid.Column="0"
+                                                           Source="/HamedShahbazi.Win7;component/Resources/icons8-confetti-96.png"
+                                                           Width="52"
+                                                           Height="52"
+                                                           Stretch="Uniform"
+                                                           HorizontalAlignment="Right"
+                                                           VerticalAlignment="Center"/>
 
-                                                    <TextBlock x:Name="DashboardHolidayCountLabel"
-                       Text="0"
-                       FontSize="25"
-                       FontWeight="Bold"
-                       Foreground="#D97706"/>
+                                                    <StackPanel Grid.Column="1"
+                                                                Margin="14,0,0,0"
+                                                                VerticalAlignment="Center"
+                                                                HorizontalAlignment="Right">
 
-                                                </StackPanel>
+                                                        <TextBlock Text="تعطیلات"
+                                                                   FontSize="12"
+                                                                   Foreground="#64748B"/>
+
+                                                        <TextBlock x:Name="DashboardHolidayCountLabel"
+                                                                   Text="0"
+                                                                   FontSize="25"
+                                                                   FontWeight="Bold"
+                                                                   Foreground="#D97706"/>
+
+                                                    </StackPanel>
+
+                                                </Grid>
 
                                             </Border>
-
 
                                             <!-- =====================================================
          برنامه‌های ذخیره‌شده
          ===================================================== -->
 
                                             <Border Grid.Column="2"
-            Background="#F5F3FF"
-            BorderBrush="#DDD6FE"
-            BorderThickness="1"
-            CornerRadius="18"
-            Padding="20"
-            Margin="8,0"
-            FlowDirection="RightToLeft">
+                                                    Background="#EEF2FF"
+                                                    BorderBrush="#C7D2FE"
+                                                    BorderThickness="1"
+                                                    CornerRadius="20"
+                                                    Padding="22"
+                                                    Margin="0,0,8,0"
+                                                    FlowDirection="RightToLeft">
 
-                                                <StackPanel>
+                                                <Grid FlowDirection="RightToLeft">
 
-                                                    <!-- آیکون بدون پس‌زمینه -->
-                                                    <TextBlock Text="▤"
-                       FontFamily="Segoe UI Symbol"
-                       FontSize="31"
-                       FontWeight="Bold"
-                       Foreground="#4F46E5"
-                       HorizontalAlignment="Left"/>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
 
-                                                    <TextBlock Text="برنامه‌های ذخیره‌شده"
-                       FontSize="12"
-                       Foreground="#64748B"
-                       Margin="0,10,0,0"/>
+                                                    <Image Grid.Column="0"
+                                                           Source="/HamedShahbazi.Win7;component/Resources/icons8-product-documents-96.png"
+                                                           Width="52"
+                                                           Height="52"
+                                                           Stretch="Uniform"
+                                                           HorizontalAlignment="Right"
+                                                           VerticalAlignment="Center"/>
 
-                                                    <TextBlock x:Name="DashboardSavedProgramsLabel"
-                       Text="0"
-                       FontSize="25"
-                       FontWeight="Bold"
-                       Foreground="#4F46E5"/>
+                                                    <StackPanel Grid.Column="1"
+                                                                Margin="14,0,0,0"
+                                                                VerticalAlignment="Center"
+                                                                HorizontalAlignment="Right">
 
-                                                </StackPanel>
+                                                        <TextBlock Text="برنامه‌های ذخیره‌شده"
+                                                                   FontSize="12"
+                                                                   Foreground="#64748B"/>
+
+                                                        <TextBlock x:Name="DashboardSavedProgramsLabel"
+                                                                   Text="0"
+                                                                   FontSize="25"
+                                                                   FontWeight="Bold"
+                                                                   Foreground="#4F46E5"/>
+
+                                                    </StackPanel>
+
+                                                </Grid>
 
                                             </Border>
 
@@ -1320,36 +1407,46 @@
          ===================================================== -->
 
                                             <Border Grid.Column="3"
-            Background="#ECFDF5"
-            BorderBrush="#A7F3D0"
-            BorderThickness="1"
-            CornerRadius="18"
-            Padding="20"
-            Margin="8,0,0,0"
-            FlowDirection="RightToLeft">
+                                                    Background="#ECFDF5"
+                                                    BorderBrush="#A7F3D0"
+                                                    BorderThickness="1"
+                                                    CornerRadius="20"
+                                                    Padding="22"
+                                                    FlowDirection="RightToLeft">
 
-                                                <StackPanel>
+                                                <Grid FlowDirection="RightToLeft">
 
-                                                    <!-- آیکون بدون پس‌زمینه -->
-                                                    <TextBlock Text="◷"
-                       FontFamily="Segoe UI Symbol"
-                       FontSize="31"
-                       FontWeight="Bold"
-                       Foreground="#059669"
-                       HorizontalAlignment="Left"/>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
 
-                                                    <TextBlock Text="آخرین برنامه"
-                       FontSize="12"
-                       Foreground="#64748B"
-                       Margin="0,10,0,0"/>
+                                                    <Image Grid.Column="0"
+                                                           Source="/HamedShahbazi.Win7;component/Resources/icons8-order-history-96.png"
+                                                           Width="52"
+                                                           Height="52"
+                                                           Stretch="Uniform"
+                                                           HorizontalAlignment="Right"
+                                                           VerticalAlignment="Center"/>
 
-                                                    <TextBlock x:Name="DashboardLastProgramDateLabel"
-                       Text="—"
-                       FontSize="16"
-                       FontWeight="Bold"
-                       Foreground="#059669"/>
+                                                    <StackPanel Grid.Column="1"
+                                                                Margin="14,0,0,0"
+                                                                VerticalAlignment="Center"
+                                                                HorizontalAlignment="Right">
 
-                                                </StackPanel>
+                                                        <TextBlock Text="آخرین برنامه"
+                                                                   FontSize="12"
+                                                                   Foreground="#64748B"/>
+
+                                                        <TextBlock x:Name="DashboardLastProgramDateLabel"
+                                                                   Text="—"
+                                                                   FontSize="16"
+                                                                   FontWeight="Bold"
+                                                                   Foreground="#059669"/>
+
+                                                    </StackPanel>
+
+                                                </Grid>
 
                                             </Border>
 
@@ -1400,10 +1497,24 @@
 
                                             <StackPanel Grid.Column="0">
 
-                                                <TextBlock Text="⚙️ تنظیمات سامانه"
-                                   FontSize="28"
-                                   FontWeight="Bold"
-                                   Foreground="White"/>
+                                                <StackPanel Orientation="Horizontal"
+                                                            FlowDirection="RightToLeft"
+                                                            VerticalAlignment="Center">
+
+                                                    <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-setting-96.png"
+                                                           Width="38"
+                                                           Height="38"
+                                                           Stretch="Uniform"
+                                                           VerticalAlignment="Center"/>
+
+                                                    <TextBlock Text="  تنظیمات سامانه"
+                                                               FontSize="23"
+                                                               FontWeight="Bold"
+                                                               Foreground="White"
+                                                               VerticalAlignment="Center"
+                                                               Margin="8,0,0,0"/>
+
+                                                </StackPanel>
 
                                                 <TextBlock Text="تنظیمات برنامه نگهبانی را از این بخش مدیریت کنید."
                                    FontSize="13"
@@ -1465,21 +1576,43 @@
                              ============================ -->
 
                                                 <Button x:Name="SettingsDaysButton"
-                                Content="📅  تعداد روز"
-                                Click="SettingsDaysButton_Click"
-                                Width="145"
-                                Height="58"
-                                Margin="4"
-                                Padding="12,0"
-                                Background="#E8F1FF"
-                                Foreground="#1D4ED8"
-                                BorderBrush="#BFDBFE"
-                                BorderThickness="1"
-                                FontSize="13"
-                                FontWeight="Bold"
-                                Cursor="Hand">
+                                                        Click="SettingsDaysButton_Click"
+                                                        Width="145"
+                                                        Height="58"
+                                                        Margin="4"
+                                                        Padding="12,0"
+                                                        Background="#E8F1FF"
+                                                        Foreground="#1D4ED8"
+                                                        BorderBrush="#BFDBFE"
+                                                        BorderThickness="1"
+                                                        FontSize="13"
+                                                        FontWeight="Bold"
+                                                        Cursor="Hand">
 
-                                                    <Button.Template>
+                                                    <StackPanel Orientation="Horizontal"
+                                                                FlowDirection="RightToLeft"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center">
+
+                                                        <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-tear-off-calendar-96.png"
+                                                               Width="22"
+                                                               Height="22"
+                                                               Stretch="Uniform"
+                                                               VerticalAlignment="Center"/>
+
+                                                        <TextBlock Text="تعداد روز"
+                                                                   FontSize="13"
+                                                                   FontWeight="Bold"
+                                                                   Foreground="{Binding Foreground,
+                                RelativeSource={RelativeSource AncestorType=Button}}"
+                                                                   VerticalAlignment="Center"
+                                                                   Margin="7,0,0,0"/>
+
+                                                    </StackPanel>
+
+                                             
+
+                                                <Button.Template>
 
                                                         <ControlTemplate TargetType="Button">
 
@@ -1507,7 +1640,7 @@
                              ============================ -->
 
                                                 <Button x:Name="SettingsReplacementButton"
-                                Content="🔄  نیروی جایگزین"
+                           
                                 Click="SettingsReplacementButton_Click"
                                 Width="165"
                                 Height="58"
@@ -1520,7 +1653,26 @@
                                 FontSize="13"
                                 FontWeight="Bold"
                                 Cursor="Hand">
+                                                    <StackPanel Orientation="Horizontal"
+                                                                FlowDirection="RightToLeft"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center">
 
+                                                        <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-change-user-96.png"
+                                                               Width="22"
+                                                               Height="22"
+                                                               Stretch="Uniform"
+                                                               VerticalAlignment="Center"/>
+
+                                                        <TextBlock Text=" نیروی جایگزین"
+                                                                   FontSize="13"
+                                                                   FontWeight="Bold"
+                                                                   Foreground="{Binding Foreground,
+RelativeSource={RelativeSource AncestorType=Button}}"
+                                                                   VerticalAlignment="Center"
+                                                                   Margin="7,0,0,0"/>
+
+                                                    </StackPanel>
                                                     <Button.Template>
 
                                                         <ControlTemplate TargetType="Button">
@@ -1549,7 +1701,7 @@
                              ============================ -->
 
                                                 <Button x:Name="SettingsHistoryButton"
-                                Content="🗂️  تاریخچه"
+                             
                                 Click="SettingsHistoryButton_Click"
                                 Width="140"
                                 Height="58"
@@ -1562,6 +1714,26 @@
                                 FontSize="13"
                                 FontWeight="Bold"
                                 Cursor="Hand">
+                                                    <StackPanel Orientation="Horizontal"
+                                                                FlowDirection="RightToLeft"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center">
+
+                                                        <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-product-documents-96.png"
+                                                               Width="22"
+                                                               Height="22"
+                                                               Stretch="Uniform"
+                                                               VerticalAlignment="Center"/>
+
+                                                        <TextBlock Text=" تاریخچه"
+                                                                   FontSize="13"
+                                                                   FontWeight="Bold"
+                                                                   Foreground="{Binding Foreground,
+RelativeSource={RelativeSource AncestorType=Button}}"
+                                                                   VerticalAlignment="Center"
+                                                                   Margin="7,0,0,0"/>
+
+                                                    </StackPanel>
 
                                                     <Button.Template>
 
@@ -1591,7 +1763,7 @@
                              ============================ -->
 
                                                 <Button x:Name="SettingsPriorityButton"
-                                Content="📆  اولویت روزها"
+                             
                                 Click="SettingsPriorityButton_Click"
                                 Width="155"
                                 Height="58"
@@ -1604,7 +1776,26 @@
                                 FontSize="13"
                                 FontWeight="Bold"
                                 Cursor="Hand">
+                                                    <StackPanel Orientation="Horizontal"
+                                                                FlowDirection="RightToLeft"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center">
 
+                                                        <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-low-importance-96.png"
+                                                               Width="22"
+                                                               Height="22"
+                                                               Stretch="Uniform"
+                                                               VerticalAlignment="Center"/>
+
+                                                        <TextBlock Text=" اولویت روز ها"
+                                                                   FontSize="13"
+                                                                   FontWeight="Bold"
+                                                                   Foreground="{Binding Foreground,
+RelativeSource={RelativeSource AncestorType=Button}}"
+                                                                   VerticalAlignment="Center"
+                                                                   Margin="7,0,0,0"/>
+
+                                                    </StackPanel>
                                                     <Button.Template>
 
                                                         <ControlTemplate TargetType="Button">
@@ -1633,7 +1824,7 @@
                              ============================ -->
 
                                                 <Button x:Name="SettingsScoreButton"
-                                Content="⭐  امتیازدهی"
+                            
                                 Click="SettingsScoreButton_Click"
                                 Width="145"
                                 Height="58"
@@ -1646,7 +1837,26 @@
                                 FontSize="13"
                                 FontWeight="Bold"
                                 Cursor="Hand">
+                                                    <StackPanel Orientation="Horizontal"
+                                                                FlowDirection="RightToLeft"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center">
 
+                                                        <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-rating-96.png"
+                                                               Width="22"
+                                                               Height="22"
+                                                               Stretch="Uniform"
+                                                               VerticalAlignment="Center"/>
+
+                                                        <TextBlock Text=" امتیاز ها"
+                                                                   FontSize="13"
+                                                                   FontWeight="Bold"
+                                                                   Foreground="{Binding Foreground,
+RelativeSource={RelativeSource AncestorType=Button}}"
+                                                                   VerticalAlignment="Center"
+                                                                   Margin="7,0,0,0"/>
+
+                                                    </StackPanel>
                                                     <Button.Template>
 
                                                         <ControlTemplate TargetType="Button">
@@ -1701,11 +1911,11 @@
 
                                                 <StackPanel Orientation="Horizontal">
 
-                                                    <TextBlock Text="◫"
-                                                               FontFamily="Segoe UI Symbol"
-                                                               FontSize="28"
-                                                               FontWeight="SemiBold"
-                                                               Foreground="#2563EB"/>
+                                                    <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-tear-off-calendar-96.png"
+                                                           Width="42"
+                                                           Height="42"
+                                                           Stretch="Uniform"
+                                                           VerticalAlignment="Center"/>
 
                                                     <StackPanel Margin="14,0,0,0"
                                         VerticalAlignment="Center">
@@ -2011,13 +2221,15 @@
 
                                                     <Border Width="46"
                                     Height="46"
-                                    Background="#059669"
+                                 
                                     CornerRadius="13">
 
-                                                        <TextBlock Text="🔄"
-                                           FontSize="22"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"/>
+
+                                                        <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-change-user-96.png"
+                                                               Width="42"
+                                                               Height="42"
+                                                               Stretch="Uniform"
+                                                               VerticalAlignment="Center"/>
 
                                                     </Border>
 
@@ -2352,14 +2564,15 @@
 
                                                     <Border Width="46"
                                     Height="46"
-                                    Background="#7C3AED"
+                                  
                                     CornerRadius="13">
 
-                                                        <TextBlock Text="🗂️"
-                                           FontSize="21"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"/>
 
+                                                        <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-product-documents-96.png"
+                                                               Width="42"
+                                                               Height="42"
+                                                               Stretch="Uniform"
+                                                               VerticalAlignment="Center"/>
                                                     </Border>
 
                                                     <StackPanel Margin="14,0,0,0">
@@ -2396,7 +2609,7 @@
                                             </Border>
 
 
-                                            <Button Content="🗂️   مشاهده تاریخچه برنامه‌ها"
+                                            <Button Content="   مشاهده تاریخچه برنامه‌ها"
                                                     Click="SavedPrograms_Click"
                            
                                                     Height="50"
@@ -2447,10 +2660,24 @@
 
                                         <StackPanel>
 
-                                            <TextBlock Text="📆 اولویت روزهای هفته"
-                               FontSize="23"
-                               FontWeight="Bold"
-                               Foreground="White"/>
+                                            <StackPanel Orientation="Horizontal"
+                                                        FlowDirection="RightToLeft"
+                                                        VerticalAlignment="Center">
+
+                                                <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-low-importance-96.png"
+                                                       Width="38"
+                                                       Height="38"
+                                                       Stretch="Uniform"
+                                                       VerticalAlignment="Center"/>
+
+                                                <TextBlock Text="اولویت روزهای هفته"
+                                                           FontSize="23"
+                                                           FontWeight="Bold"
+                                                           Foreground="White"
+                                                           VerticalAlignment="Center"
+                                                           Margin="8,0,0,0"/>
+
+                                            </StackPanel>
 
                                             <TextBlock Text="قوانین ثابت مورد استفاده در الگوریتم"
                                FontSize="13"
@@ -2573,13 +2800,14 @@
 
                                                     <Border Width="46"
                                     Height="46"
-                                    Background="#D97706"
+                                  
                                     CornerRadius="13">
 
-                                                        <TextBlock Text="⭐"
-                                           FontSize="21"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"/>
+                                                        <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-rating-96.png"
+                                                               Width="42"
+                                                               Height="42"
+                                                               Stretch="Uniform"
+                                                               VerticalAlignment="Center"/>
 
                                                     </Border>
 
@@ -2901,10 +3129,12 @@
                     Background="#E8F1FF"
                     VerticalAlignment="Center">
 
-                                                <TextBlock Text="📅"
-                           FontSize="30"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"/>
+                                                <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-add-list-96.png"
+                                                       Width="41"
+                                                       Height="41"
+                                                       Stretch="Uniform"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
 
                                             </Border>
 
@@ -2999,14 +3229,15 @@
                                                     <Border Width="58"
                             Height="58"
                             CornerRadius="13"
-                            Background="#2563EB"
+                         
                             VerticalAlignment="Center">
 
-                                                        <TextBlock Text="➕"
-                                   FontSize="29"
-                                   Foreground="White"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"/>
+                                                        <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-add-list-96.png"
+                                                               Width="41"
+                                                               Height="41"
+                                                               Stretch="Uniform"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center"/>
 
                                                     </Border>
 
@@ -3063,13 +3294,15 @@
                 Width="58"
                 Height="58"
                 CornerRadius="13"
-                Background="#7C3AED"
+             
                 VerticalAlignment="Center">
 
-                                                    <TextBlock Text="🧪"
-                       FontSize="27"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"/>
+                                                    <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-pass-fail-96.png"
+                                                           Width="41"
+                                                           Height="41"
+                                                           Stretch="Uniform"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"/>
 
                                                 </Border>
 
@@ -3303,7 +3536,7 @@
                 Grid.Column="3"
                 Width="160"
                 Height="44"
-                Content="🧪 ایجاد اطلاعات تستی"
+                Content=" ایجاد اطلاعات تستی"
                 Click="CreateTestData_Click"
                 Cursor="Hand"
                 Background="#7C3AED"
@@ -3388,14 +3621,15 @@
                                                     <Border Width="58"
                             Height="58"
                             CornerRadius="13"
-                            Background="#DC2626"
+                           
                             VerticalAlignment="Center">
 
-                                                        <TextBlock Text="📄"
-                                   FontSize="28"
-                                   Foreground="White"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"/>
+                                                        <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-pdf-96.png"
+                                                               Width="41"
+                                                               Height="41"
+                                                               Stretch="Uniform"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center"/>
 
                                                     </Border>
 
@@ -3473,14 +3707,15 @@
                                                     <Border Width="58"
                             Height="58"
                             CornerRadius="13"
-                            Background="#059669"
+                           
                             VerticalAlignment="Center">
 
-                                                        <TextBlock Text="📊"
-                                   FontSize="27"
-                                   Foreground="White"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"/>
+                                                        <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-report-card-96.png"
+                                                               Width="41"
+                                                               Height="41"
+                                                               Stretch="Uniform"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center"/>
 
                                                     </Border>
 
@@ -3566,11 +3801,12 @@
                             BorderThickness="1"
                             VerticalAlignment="Center">
 
-                                                <TextBlock Text="📅"
-                                   FontSize="29"
-                                   Foreground="#FBBF24"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"/>
+                                                <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-calendar-96.png"
+                                                       Width="41"
+                                                       Height="41"
+                                                       Stretch="Uniform"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
 
                                             </Border>
 
@@ -3744,13 +3980,15 @@
                                             <Border Width="60"
                             Height="60"
                             CornerRadius="15"
-                            Background="#7C3AED"
+                           
                             VerticalAlignment="Center">
 
-                                                <TextBlock Text="📖"
-                                   FontSize="30"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"/>
+                                                <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-think-do-96.png"
+                                                       Width="41"
+                                                       Height="41"
+                                                       Stretch="Uniform"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
 
                                             </Border>
 
@@ -3832,12 +4070,12 @@
                             CornerRadius="11"
                             Background="#F3E8FF">
 
-                                                <TextBlock Text="ℹ"
-                                   FontSize="21"
-                                   FontWeight="Bold"
-                                   Foreground="#7C3AED"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"/>
+                                                <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-think-do-96.png"
+                                                       Width="41"
+                                                       Height="41"
+                                                       Stretch="Uniform"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
 
                                             </Border>
 
@@ -3893,7 +4131,9 @@
                               Visibility="Collapsed"
                               FlowDirection="RightToLeft"
                               Background="#F8FAFC">
-
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
                             <ScrollViewer x:Name="ReportsContent"
                                           VerticalScrollBarVisibility="Auto"
                                           HorizontalScrollBarVisibility="Disabled">
@@ -3911,10 +4151,24 @@
 
                                         <StackPanel>
 
-                                            <TextBlock Text="📊 گزارش برنامه نگهبانی"
-                               FontSize="27"
-                               FontWeight="Bold"
-                               Foreground="White"/>
+                                            <StackPanel Orientation="Horizontal"
+                                                        FlowDirection="RightToLeft"
+                                                        VerticalAlignment="Center">
+
+                                                <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-report-card-96.png"
+                                                       Width="41"
+                                                       Height="41"
+                                                       Stretch="Uniform"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+
+                                                <TextBlock Text="گزارش برنامه نگهبانی"
+                                                           FontSize="27"
+                                                           FontWeight="Bold"
+                                                           Foreground="White"
+                                                           VerticalAlignment="Center"
+                                                           Margin="8,0,0,0"/>
+                                            </StackPanel>
 
                                             <TextBlock Text="گزارش کامل عملکرد افسران بر اساس برنامه تولیدشده"
                                FontSize="13"
@@ -3938,12 +4192,25 @@
                     Margin="0,0,0,20">
 
                                         <StackPanel>
+                                            <StackPanel Orientation="Horizontal"
+                                                        FlowDirection="RightToLeft"
+                                                        VerticalAlignment="Center">
 
-                                            <TextBlock Text="🔄 گزارش افسران جانشین"
-                               FontSize="21"
-                               FontWeight="Bold"
-                               Foreground="#059669"
-                               Margin="0,0,0,15"/>
+                                                <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-change-user-96.png"
+                                                       Width="31"
+                                                       Height="31"
+                                                       Stretch="Uniform"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+
+                                                <TextBlock Text=" گزارش افسران جانشین"
+                                                           FontSize="21"
+                                                           FontWeight="Bold"
+                                                           Foreground="Black"
+                                                           VerticalAlignment="Center"
+                                                           Margin="8,0,0,20"/>
+                                            </StackPanel>
+                                          
 
                                             <Border BorderBrush="#D1D5DB"
                             BorderThickness="1"
@@ -4348,11 +4615,24 @@
 
                                         <StackPanel>
 
-                                            <TextBlock Text="🎖️ گزارش افسران سر"
-                               FontSize="21"
-                               FontWeight="Bold"
-                               Foreground="#D97706"
-                               Margin="0,0,0,15"/>
+                                            <StackPanel Orientation="Horizontal"
+                                                        FlowDirection="RightToLeft"
+                                                        VerticalAlignment="Center">
+
+                                                <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-rating-96.png"
+                                                       Width="41"
+                                                       Height="41"
+                                                       Stretch="Uniform"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+
+                                                <TextBlock Text=" گزارش افسران سر"
+                                                           FontSize="21"
+                                                           FontWeight="Bold"
+                                                           Foreground="Black"
+                                                           VerticalAlignment="Center"
+                                                           Margin="8,0,0,20"/>
+                                            </StackPanel>
 
                                             <Border BorderBrush="#D1D5DB"
                             BorderThickness="1"
@@ -4726,11 +5006,24 @@
 
                                         <StackPanel>
 
-                                            <TextBlock Text="👮 گزارش افسران پاسدار"
-                               FontSize="21"
-                               FontWeight="Bold"
-                               Foreground="#2563EB"
-                               Margin="0,0,0,15"/>
+                                            <StackPanel Orientation="Horizontal"
+                                                        FlowDirection="RightToLeft"
+                                                        VerticalAlignment="Center">
+
+                                                <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-police-skin-type-4-96.png"
+                                                       Width="31"
+                                                       Height="31"
+                                                       Stretch="Uniform"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+
+                                                <TextBlock Text=" گزارش افسران پاسدار"
+                                                           FontSize="21"
+                                                           FontWeight="Bold"
+                                                           Foreground="Black"
+                                                           VerticalAlignment="Center"
+                                                           Margin="8,0,0,20"/>
+                                            </StackPanel>
 
                                             <Border BorderBrush="#D1D5DB"
                             BorderThickness="1"
@@ -5488,10 +5781,11 @@
                                 CornerRadius="16"
                                 Background="#F3E8FF">
 
-                                                    <TextBlock Text="🗂️"
-                                       FontSize="30"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"/>
+                                                    <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-product-documents-96.png"
+                                                           Width="41"
+                                                           Height="41"
+                                                           Stretch="Uniform"
+                                                           VerticalAlignment="Center"/>
 
                                                 </Border>
 
@@ -5567,10 +5861,12 @@
                         HorizontalAlignment="Right"
                         VerticalAlignment="Top">
 
-                                                <TextBlock Text="👮"
-                               FontSize="30"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"/>
+                                                <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-police-skin-type-4-96.png"
+                                                       Width="35"
+                                                       Height="35"
+                                                       Stretch="Uniform"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
                                             </Border>
 
                                             <!-- متن -->
@@ -5652,12 +5948,14 @@
                                                     <Border Width="42"
                                 Height="42"
                                 CornerRadius="12"
-                                Background="#2563EB">
+                                >
 
-                                                        <TextBlock Text="👮"
-                                       FontSize="21"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"/>
+                                                        <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-police-skin-type-4-96.png"
+                                                               Width="31"
+                                                               Height="31"
+                                                               Stretch="Uniform"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center"/>
 
                                                     </Border>
 
@@ -6081,12 +6379,14 @@
                                                     <Border Width="42"
                                 Height="42"
                                 CornerRadius="12"
-                                Background="#059669">
+                                >
 
-                                                        <TextBlock Text="🔄"
-                                       FontSize="21"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"/>
+                                                        <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-change-user-96.png"
+                                                               Width="31"
+                                                               Height="31"
+                                                               Stretch="Uniform"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center"/>
 
                                                     </Border>
 
@@ -6497,12 +6797,14 @@
                                                     <Border Width="42"
                                 Height="42"
                                 CornerRadius="12"
-                                Background="#D97706">
+                              >
 
-                                                        <TextBlock Text="⭐"
-                                       FontSize="21"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"/>
+                                                        <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-rating-96.png"
+                                                               Width="31"
+                                                               Height="31"
+                                                               Stretch="Uniform"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center"/>
 
                                                     </Border>
 
@@ -6865,17 +7167,23 @@
 
                         </ScrollViewer>
 
-                        <!-- =====================================================
-     PRELOADER گزارشات
-===================================================== -->
+                  
 
-                        <Grid x:Name="ReportsLoadingOverlay"
-                      Grid.Row="1"
-                      Visibility="Collapsed"
-                      Background="#F8FAFC"
-                      Panel.ZIndex="9999">
+                    </Grid>
 
-                            <Border Width="560"
+                </ScrollViewer>
+
+
+
+                <Grid x:Name="ReportsLoadingOverlay"
+      Grid.Row="1"
+      Visibility="Collapsed"
+      Background="#F8FAFC"
+      Panel.ZIndex="9999"
+      HorizontalAlignment="Stretch"
+      VerticalAlignment="Stretch">
+
+                    <Border Width="560"
             Height="360"
             Background="White"
             BorderBrush="#E2E8F0"
@@ -6885,68 +7193,54 @@
             VerticalAlignment="Center"
             Padding="35">
 
-                                <StackPanel HorizontalAlignment="Center"
+                        <StackPanel HorizontalAlignment="Center"
                     VerticalAlignment="Center">
 
-                                    <!-- آیکون -->
-
-                                    <Border Width="76"
+                            <Border Width="76"
                     Height="76"
                     CornerRadius="22"
                     Background="#E8F1FF"
                     HorizontalAlignment="Center"
                     Margin="0,0,0,18">
 
-                                        <TextBlock Text="📊"
-                           FontSize="39"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"/>
+                                <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-report-card-96.png"
+                                       Width="39"
+                                       Height="39"
+                                       Stretch="Uniform"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                            </Border>
 
-                                    </Border>
-
-
-                                    <!-- عنوان -->
-
-                                    <TextBlock Text="در حال آماده‌سازی گزارشات"
+                            <TextBlock Text="در حال آماده‌سازی گزارشات"
                        FontSize="23"
                        FontWeight="Bold"
                        Foreground="#0F172A"
                        HorizontalAlignment="Center"/>
 
-
-                                    <!-- متن مرحله -->
-
-                                    <TextBlock x:Name="ReportsLoadingText"
+                            <TextBlock x:Name="ReportsLoadingText"
                        Text="در حال شروع..."
                        FontSize="13"
                        Foreground="#64748B"
                        HorizontalAlignment="Center"
                        Margin="0,10,0,24"/>
 
+                            <Border Width="420"
+                    Height="16"
+                    Background="#E2E8F0"
+                    CornerRadius="8"
+                    HorizontalAlignment="Center">
 
-                                    <!-- نوار پیشرفت -->
+                                <ProgressBar x:Name="ReportsLoadingProgress"
+                             Minimum="0"
+                             Maximum="100"
+                             Value="0"
+                             Height="16"
+                             Background="#E2E8F0"
+                             Foreground="#2563EB"
+                             BorderThickness="0"/>
+                            </Border>
 
-                                    <Border Width="420"
-                                                Height="16"
-                                                Background="#E2E8F0"
-                                                CornerRadius="8"
-                                                HorizontalAlignment="Center">
-
-                                        <ProgressBar x:Name="ReportsLoadingProgress"
-                                                         Minimum="0"
-                                                         Maximum="100"
-                                                         Value="0"
-                                                         Height="16"
-                                                         Background="#E2E8F0"
-                                                         Foreground="#2563EB"
-                                                         BorderThickness="0"/>
-
-                                    </Border>
-
-
-                                    <!-- درصد -->
-
-                                    <TextBlock x:Name="ReportsLoadingPercent"
+                            <TextBlock x:Name="ReportsLoadingPercent"
                        Text="0%"
                        FontSize="34"
                        FontWeight="Bold"
@@ -6954,25 +7248,16 @@
                        HorizontalAlignment="Center"
                        Margin="0,20,0,0"/>
 
-
-                                    <!-- وضعیت -->
-
-                                    <TextBlock x:Name="ReportsLoadingStatus"
+                            <TextBlock x:Name="ReportsLoadingStatus"
                        Text="لطفاً صبر کنید..."
                        FontSize="11"
                        Foreground="#94A3B8"
                        HorizontalAlignment="Center"
                        Margin="0,5,0,0"/>
 
-                                </StackPanel>
-
-                            </Border>
-                        </Grid>
-
-                    </Grid>
-
-                </ScrollViewer>
-
+                        </StackPanel>
+                    </Border>
+                </Grid>
             </Grid>
 
         </Grid>
