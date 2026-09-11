@@ -155,17 +155,17 @@
 
         <Grid x:Name="MainApplicationView"
               Visibility="Collapsed">
-
             <Grid.ColumnDefinitions>
 
                 <!-- محتوا -->
                 <ColumnDefinition Width="*"/>
 
                 <!-- سایدبار -->
-                <ColumnDefinition Width="280"/>
+                <ColumnDefinition Width="0.25*"
+                                  MinWidth="240"
+                                  MaxWidth="260"/>
 
             </Grid.ColumnDefinitions>
-
 
             <!-- =================================================
                  SIDEBAR
@@ -1610,9 +1610,9 @@
 
                                                     </StackPanel>
 
-                                             
 
-                                                <Button.Template>
+
+                                                    <Button.Template>
 
                                                         <ControlTemplate TargetType="Button">
 
@@ -2495,8 +2495,7 @@ RelativeSource={RelativeSource AncestorType=Button}}"
                                                     </ComboBox.ItemContainerStyle>
 
                                                     <ComboBoxItem Content="1"/>
-                                                    <ComboBoxItem Content="2"/>
-                                                    <ComboBoxItem Content="3"/>
+
 
                                                 </ComboBox>
 
@@ -4118,6 +4117,87 @@ RelativeSource={RelativeSource AncestorType=Button}}"
 
                                     </Grid>
 
+
+                                    <!-- =================================================
+                 راهنمای نیروی جایگزین
+                 ================================================== -->
+                                    <Border x:Name="GuideReplacementSection"
+                                            Background="#FFFFFF"
+                                            BorderBrush="#A7F3D0"
+                                            BorderThickness="1"
+                                            CornerRadius="18"
+                                            Padding="20"
+                                            Margin="0,20,0,0">
+
+                                        <StackPanel>
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Border Width="46"
+                                                        Height="46"
+                                                        CornerRadius="13"
+                                                        Background="#ECFDF5">
+                                                    <Image Source="/HamedShahbazi.Win7;component/Resources/icons8-change-user-96.png"
+                                                           Width="34"
+                                                           Height="34"
+                                                           Stretch="Uniform"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"/>
+                                                </Border>
+
+                                                <StackPanel Grid.Column="1"
+                                                            Margin="14,0,0,0"
+                                                            VerticalAlignment="Center">
+                                                    <TextBlock Text="راهنمای نیروی جایگزین"
+                                                               FontSize="19"
+                                                               FontWeight="Bold"
+                                                               Foreground="#065F46"/>
+                                                    <TextBlock x:Name="GuideReplacementStatusLabel"
+                                                               Text="نیروی جایگزین غیرفعال است."
+                                                               FontSize="12"
+                                                               Foreground="#64748B"
+                                                               TextWrapping="Wrap"
+                                                               Margin="0,5,0,0"/>
+                                                </StackPanel>
+                                            </Grid>
+
+                                            <Border Background="#F8FAFC"
+                                                    BorderBrush="#E2E8F0"
+                                                    BorderThickness="1"
+                                                    CornerRadius="12"
+                                                    Padding="14"
+                                                    Margin="0,16,0,0">
+                                                <StackPanel>
+                                                    <TextBlock x:Name="GuideReplacementGuardLabel"
+                                                               Text="افسر پاسدار"
+                                                               FontSize="12"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="#334155"
+                                                               TextWrapping="Wrap"
+                                                               Margin="0,0,0,8"/>
+                                                    <TextBlock x:Name="GuideReplacementReserveLabel"
+                                                               Text="افسر جانشین"
+                                                               FontSize="12"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="#334155"
+                                                               TextWrapping="Wrap"
+                                                               Margin="0,0,0,8"/>
+                                                    <TextBlock x:Name="GuideReplacementChiefLabel"
+                                                               Text="افسر سر"
+                                                               FontSize="12"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="#334155"
+                                                               TextWrapping="Wrap"/>
+                                                </StackPanel>
+                                            </Border>
+
+                                        </StackPanel>
+                                    </Border>
+
                                 </StackPanel>
 
                             </ScrollViewer>
@@ -4210,7 +4290,7 @@ RelativeSource={RelativeSource AncestorType=Button}}"
                                                            VerticalAlignment="Center"
                                                            Margin="8,0,0,20"/>
                                             </StackPanel>
-                                          
+
 
                                             <Border BorderBrush="#D1D5DB"
                             BorderThickness="1"
@@ -5758,9 +5838,9 @@ RelativeSource={RelativeSource AncestorType=Button}}"
 
                                     <StackPanel>
 
-                                        
-                            
-                                
+
+
+
 
                                         <Border Background="#FFFFFF"
                         CornerRadius="20"
@@ -5810,8 +5890,20 @@ RelativeSource={RelativeSource AncestorType=Button}}"
 
                                         </Border>
 
-                                        
-                                
+
+                                        <Button Content="🗑 حذف کل تاریخچه"
+                                                Click="DeleteAllHistory_Click"
+                                                Height="48"
+                                                Margin="0,0,0,16"
+                                                HorizontalAlignment="Right"
+                                                Padding="24,0"
+                                                Background="#FFF1F2"
+                                                BorderBrush="#FECDD3"
+                                                BorderThickness="1"
+                                                Foreground="#E11D48"
+                                                FontWeight="Bold"
+                                                Cursor="Hand"/>
+
 
                                         <StackPanel x:Name="HistoryProgramsContainer"
                             FlowDirection="RightToLeft"/>
@@ -7167,7 +7259,7 @@ RelativeSource={RelativeSource AncestorType=Button}}"
 
                         </ScrollViewer>
 
-                  
+
 
                     </Grid>
 

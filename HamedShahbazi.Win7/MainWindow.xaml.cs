@@ -72,11 +72,11 @@ namespace HamedShahbazi.Win7
         {
             public Border Card { get; set; }
 
+            public TextBlock TotalStatusLabel { get; set; }
+
             public Dictionary<double, GuideScoreUI> Scores { get; set; }
                 = new Dictionary<double, GuideScoreUI>();
         }
-
-
 
 
         private readonly ScheduleGenerator scheduleGenerator =
@@ -125,7 +125,7 @@ namespace HamedShahbazi.Win7
 
 
 
-        private bool isLoadingSettings = false;
+        private bool isLoadingSettings = true;
         [Serializable]
         public class AppSettings
         {
@@ -138,7 +138,11 @@ namespace HamedShahbazi.Win7
             public bool NotificationsEnabled { get; set; }
 
             public bool TestDataActive { get; set; }
+            public List<string> UsedReplacementGuards { get; set; }
 
+            public List<string> UsedReplacementReserves { get; set; }
+
+            public List<string> UsedReplacementChiefs { get; set; }
             public AppSettings()
             {
                 ProgramDays = 31;
@@ -146,6 +150,14 @@ namespace HamedShahbazi.Win7
                 ReplacementCount = 1;
                 NotificationsEnabled = true;
                 TestDataActive = false;
+                UsedReplacementGuards =
+                    new List<string>();
+
+                UsedReplacementReserves =
+                    new List<string>();
+
+                UsedReplacementChiefs =
+                    new List<string>();
             }
         }
 
@@ -254,6 +266,11 @@ namespace HamedShahbazi.Win7
         {
             try
             {
+                if (ReplacementCheckBox != null)
+                {
+                    useReplacementOfficers =
+                        ReplacementCheckBox.IsChecked == true;
+                }
                 AppSettings settings =
                     new AppSettings();
 
@@ -261,7 +278,8 @@ namespace HamedShahbazi.Win7
                     selectedProgramDays;
 
                 settings.ReplacementEnabled =
-                    useReplacementOfficers;
+                    ReplacementCheckBox != null &&
+                    ReplacementCheckBox.IsChecked == true;
 
                 settings.ReplacementCount =
                     replacementCountPerGroup;
@@ -271,7 +289,14 @@ namespace HamedShahbazi.Win7
 
                 settings.TestDataActive =
                     isTestDataActive;
+                settings.UsedReplacementGuards =
+                    usedReplacementGuards.ToList();
 
+                settings.UsedReplacementReserves =
+                    usedReplacementReserves.ToList();
+
+                settings.UsedReplacementChiefs =
+                    usedReplacementChiefs.ToList();
                 XmlSerializer serializer =
                     new XmlSerializer(
                         typeof(AppSettings));
@@ -527,131 +552,340 @@ namespace HamedShahbazi.Win7
 
             return result;
         }
-
         // =====================================================
-        // بررسی ظرفیت نیروها قبل از ایجاد برنامه
+        // بررسی تعداد کل نیروهای هر لیست بر اساس تعداد روز برنامه
         // =====================================================
-        private bool ValidateOfficerCapacity()
+        private string BuildOfficerCountMessage(
+            string role,
+            List<Officer> officers)
         {
+            int currentCount =
+                officers != null
+                    ? officers.Count
+                    : 0;
+
+            int programDays =
+                selectedProgramDays;
+
+            if (programDays <= 0 ||
+                currentCount <= programDays)
+            {
+                return "";
+            }
+
+            int replacementCount =
+                officers != null
+                    ? officers.Count(
+                        delegate (Officer officer)
+                        {
+                            return officer != null &&
+                                   officer.IsReplacement;
+                        })
+                    : 0;
+
+            bool validSingleReplacement =
+                useReplacementOfficers &&
+                currentCount == programDays + 1 &&
+                replacementCount == 1 &&
+                officers != null &&
+                officers.Any(
+                    delegate (Officer officer)
+                    {
+                        return officer != null &&
+                               officer.IsReplacement &&
+                               officer.Score == 2.0;
+                    });
+
+            if (validSingleReplacement)
+                return "";
+
+            int excess =
+                currentCount - programDays;
+
+            string replacementHint =
+                useReplacementOfficers
+                    ? "با فعال بودن نیروی جایگزین نیز فقط یک نفر اضافه و آن هم باید به‌عنوان جایگزین امتیاز ۲ ثبت شده باشد."
+                    : "برای ساخت برنامه بدون نیروی جایگزین، تعداد نیروها نباید بیشتر از تعداد روزها باشد.";
+
+            return
+                "❌ " + role + "\n" +
+                "تعداد فعلی: " +
+                ToPersianNumber(currentCount) +
+                " نفر\n" +
+                "تعداد روزها: " +
+                ToPersianNumber(programDays) +
+                " روز\n\n" +
+                "تعداد نیروها " +
+                ToPersianNumber(excess) +
+                " نفر بیشتر از تعداد روزهاست.\n" +
+                replacementHint;
+        }
+        // =====================================================
+        // بررسی ظرفیت امتیازهای 0.5 ، 1 و 2
+        // =====================================================
+
+        private string BuildScoreCapacityMessage(
+            string role,
+            List<Officer> officers)
+        {
+            List<string> errors =
+                new List<string>();
+
             Dictionary<double, int> capacity =
                 CalculateScoreCapacity();
 
-            // ==========================================
-            // تابع ساخت پیام خطا برای یک لیست
-            // ==========================================
-            string BuildOverCapacityMessage(
-                string role,
-                List<Officer> officers)
+            double[] scores =
+                new double[] { 0.5, 1.0, 2.0 };
+
+            int totalOfficerCount =
+                officers != null
+                    ? officers.Count
+                    : 0;
+
+            int programDays =
+                selectedProgramDays;
+
+            int replacementCount =
+                officers != null
+                    ? officers.Count(
+                        delegate (Officer officer)
+                        {
+                            return officer != null &&
+                                   officer.IsReplacement;
+                        })
+                    : 0;
+
+            bool validReplacementExtra =
+                useReplacementOfficers &&
+                totalOfficerCount == programDays + 1 &&
+                replacementCount == 1 &&
+                officers != null &&
+                officers.Any(
+                    delegate (Officer officer)
+                    {
+                        return officer != null &&
+                               officer.IsReplacement &&
+                               officer.Score == 2.0;
+                    });
+
+            foreach (double score in scores)
             {
-                List<string> errors =
-                    new List<string>();
-
-                double[] scores =
-                    new double[] { 0.5, 1.0, 2.0 };
-
-                foreach (double score in scores)
-                {
-                    int currentCount =
-                        officers.Count(
+                int currentCount =
+                    officers != null
+                        ? officers.Count(
                             delegate (Officer officer)
                             {
-                                return officer.Score == score;
-                            });
+                                return officer != null &&
+                                       officer.Score == score;
+                            })
+                        : 0;
 
-                    int maxCapacity =
-                        capacity.ContainsKey(score)
-                            ? capacity[score]
-                            : 0;
+                int maxCapacity =
+                    capacity.ContainsKey(score)
+                        ? capacity[score]
+                        : 0;
 
-                    if (currentCount > maxCapacity)
-                    {
-                        int excess =
-                            currentCount - maxCapacity;
+                int effectiveMaxCapacity =
+                    maxCapacity;
 
-                        errors.Add(
-                            "امتیاز " +
-                            score.ToString() +
-                            " : " +
-                            currentCount.ToString() +
-                            " نفر " +
-                            " (ظرفیت مجاز: " +
-                            maxCapacity.ToString() +
-                            " نفر، " +
-                            "مازاد: " +
-                            excess.ToString() +
-                            " نفر)");
-                    }
+                if (useReplacementOfficers &&
+                    score == 2.0 &&
+                    (totalOfficerCount == programDays ||
+                     validReplacementExtra))
+                {
+                    effectiveMaxCapacity++;
                 }
 
-                if (errors.Count == 0)
-                    return "";
+                if (currentCount > effectiveMaxCapacity)
+                {
+                    int excess =
+                        currentCount - effectiveMaxCapacity;
 
-                return
-                    "❌ " + role + "\n" +
-                    string.Join("\n", errors);
+                    errors.Add(
+                        "امتیاز " +
+                        score.ToString() +
+                        " : " +
+                        currentCount.ToString() +
+                        " نفر " +
+                        "(ظرفیت مجاز: " +
+                        effectiveMaxCapacity.ToString() +
+                        " نفر، " +
+                        "مازاد: " +
+                        excess.ToString() +
+                        " نفر)");
+                }
             }
 
+            // اگر یک نفر اضافه وجود دارد، فقط در صورت ثبت صحیح
+            // همان یک نفر به‌عنوان جایگزین امتیاز ۲ مجاز است.
+            if (totalOfficerCount == programDays + 1 &&
+                !validReplacementExtra)
+            {
+                errors.Add(
+                    "یک نفر اضافه در " + role +
+                    " فقط زمانی مجاز است که نیروی جایگزین فعال باشد " +
+                    "و دقیقاً یک نفر با امتیاز ۲ به‌عنوان جایگزین ثبت شده باشد.");
+            }
 
-            // ==========================================
-            // بررسی سه لیست
-            // ==========================================
+            if (errors.Count == 0)
+                return "";
 
+            return
+                "❌ " + role + "\n" +
+                string.Join("\n", errors);
+        }
+        // =====================================================
+        // بررسی کامل ظرفیت نیروها قبل از ایجاد برنامه
+        // =====================================================
+
+        private string BuildReplacementRequirementMessage(
+            string role,
+            List<Officer> officers)
+        {
+            if (!useReplacementOfficers ||
+                officers == null ||
+                officers.Count != selectedProgramDays)
+            {
+                return "";
+            }
+
+            bool hasScore2 =
+                officers.Any(
+                    delegate (Officer officer)
+                    {
+                        return officer != null &&
+                               officer.Score == 2;
+                    });
+
+            if (hasScore2)
+                return "";
+
+            return
+                "❌ " + role + "\n" +
+                "تعداد نیروها با تعداد روزهای برنامه برابر است و نیروی جایگزین فعال شده است.\n" +
+                "برای استفاده از یک نیروی جایگزین، حداقل یک نیروی با امتیاز ۲ در این لیست لازم است.";
+        }
+        // =====================================================
+        // بررسی کامل ظرفیت نیروها قبل از ایجاد برنامه
+        // =====================================================
+        private bool ValidateOfficerCapacity()
+        {
             List<string> allErrors =
                 new List<string>();
 
-            string guardError =
-                BuildOverCapacityMessage(
+            // =================================================
+            // بررسی تعداد کل نیروها
+            // =================================================
+
+            string guardCountError =
+                BuildOfficerCountMessage(
                     "افسر پاسدار",
                     guardOfficers);
 
-            if (!string.IsNullOrWhiteSpace(guardError))
-                allErrors.Add(guardError);
+            if (!string.IsNullOrWhiteSpace(guardCountError))
+                allErrors.Add(guardCountError);
 
 
-            string reserveError =
-                BuildOverCapacityMessage(
+            string reserveCountError =
+                BuildOfficerCountMessage(
                     "افسر جانشین",
                     reserveOfficers);
 
-            if (!string.IsNullOrWhiteSpace(reserveError))
-                allErrors.Add(reserveError);
+            if (!string.IsNullOrWhiteSpace(reserveCountError))
+                allErrors.Add(reserveCountError);
 
 
-            string chiefError =
-                BuildOverCapacityMessage(
+            string chiefCountError =
+                BuildOfficerCountMessage(
                     "افسر سر",
                     chiefOfficers);
 
-            if (!string.IsNullOrWhiteSpace(chiefError))
-                allErrors.Add(chiefError);
+            if (!string.IsNullOrWhiteSpace(chiefCountError))
+                allErrors.Add(chiefCountError);
+
+            string guardReplacementError =
+                BuildReplacementRequirementMessage(
+                    "افسر پاسدار",
+                    guardOfficers);
+
+            if (!string.IsNullOrWhiteSpace(guardReplacementError))
+                allErrors.Add(guardReplacementError);
+
+            string reserveReplacementError =
+                BuildReplacementRequirementMessage(
+                    "افسر جانشین",
+                    reserveOfficers);
+
+            if (!string.IsNullOrWhiteSpace(reserveReplacementError))
+                allErrors.Add(reserveReplacementError);
+
+            string chiefReplacementError =
+                BuildReplacementRequirementMessage(
+                    "افسر سر",
+                    chiefOfficers);
+
+            if (!string.IsNullOrWhiteSpace(chiefReplacementError))
+                allErrors.Add(chiefReplacementError);
 
 
-            // ==========================================
-            // اگر هیچ خطایی نیست
-            // ==========================================
+            // =================================================
+            // بررسی ظرفیت امتیازها
+            // =================================================
+
+            string guardScoreError =
+                BuildScoreCapacityMessage(
+                    "افسر پاسدار",
+                    guardOfficers);
+
+            if (!string.IsNullOrWhiteSpace(guardScoreError))
+                allErrors.Add(guardScoreError);
+
+
+            string reserveScoreError =
+                BuildScoreCapacityMessage(
+                    "افسر جانشین",
+                    reserveOfficers);
+
+            if (!string.IsNullOrWhiteSpace(reserveScoreError))
+                allErrors.Add(reserveScoreError);
+
+
+            string chiefScoreError =
+                BuildScoreCapacityMessage(
+                    "افسر سر",
+                    chiefOfficers);
+
+            if (!string.IsNullOrWhiteSpace(chiefScoreError))
+                allErrors.Add(chiefScoreError);
+
+
+            // =================================================
+            // اگر هیچ خطایی وجود ندارد
+            // =================================================
 
             if (allErrors.Count == 0)
                 return true;
 
 
-            // ==========================================
-            // نمایش خطا
-            // ==========================================
+            // =================================================
+            // نمایش تمام خطاها
+            // =================================================
 
             MessageBox.Show(
                 "امکان ایجاد برنامه وجود ندارد.\n\n" +
-                "ظرفیت مجاز در راهنما رعایت نشده است.\n\n" +
                 string.Join(
                     "\n\n",
                     allErrors) +
                 "\n\n" +
-                "لطفاً تعداد نیروها یا امتیازها را اصلاح کنید.",
-                "ظرفیت نیروها بیشتر از حد مجاز است",
+                "لطفاً تعداد نیروها، امتیازها " +
+                "و وضعیت نیروی جایگزین را بررسی کنید.",
+                "بررسی ظرفیت نیروها",
                 MessageBoxButton.OK,
                 MessageBoxImage.Warning);
 
             return false;
         }
+
         private GuideCardUI CreateGuideCard(
             string iconPath,
             string title,
@@ -777,7 +1011,35 @@ namespace HamedShahbazi.Win7
 
             main.Children.Add(header);
 
+            // =====================================================
+            // وضعیت کلی تعداد نیروها
+            // =====================================================
+            TextBlock totalStatusLabel =
+                new TextBlock();
 
+            totalStatusLabel.FontSize =
+                12;
+
+            totalStatusLabel.FontWeight =
+                FontWeights.SemiBold;
+
+            totalStatusLabel.TextAlignment =
+                TextAlignment.Right;
+
+            totalStatusLabel.HorizontalAlignment =
+                HorizontalAlignment.Stretch;
+
+            totalStatusLabel.Margin =
+                new Thickness(5, 11, 5, 0);
+
+            totalStatusLabel.Foreground =
+                new System.Windows.Media.SolidColorBrush(
+                    (System.Windows.Media.Color)
+                    System.Windows.Media.ColorConverter
+                        .ConvertFromString("#64748B"));
+
+            main.Children.Add(
+                totalStatusLabel);
             // =====================================================
             // جداکننده
             // =====================================================
@@ -840,10 +1102,11 @@ namespace HamedShahbazi.Win7
             card.Child =
                 main;
 
-
             guideCard.Card =
                 card;
 
+            guideCard.TotalStatusLabel =
+                totalStatusLabel;
 
             return guideCard;
         }
@@ -1309,6 +1572,10 @@ namespace HamedShahbazi.Win7
             Dictionary<double, int> capacity =
                 CalculateScoreCapacity();
 
+            // ==========================================
+            // بررسی تعداد نیروها بر اساس تعداد روز برنامه
+            // ==========================================
+
 
             UpdateSingleGuideCard(
                 guardGuideCard,
@@ -1327,6 +1594,8 @@ namespace HamedShahbazi.Win7
                 chiefOfficers,
                 capacity);
 
+            UpdateReplacementGuideSection();
+
 
             if (GuideProgramDaysLabel != null)
             {
@@ -1340,6 +1609,125 @@ namespace HamedShahbazi.Win7
             List<Officer> officers,
             Dictionary<double, int> capacity)
         {
+            if (guideCard == null ||
+                officers == null)
+            {
+                return;
+            }
+
+            int totalOfficerCount =
+                officers.Count;
+
+            int replacementCount =
+                officers.Count(
+                    delegate (Officer officer)
+                    {
+                        return officer != null &&
+                               officer.IsReplacement;
+                    });
+
+            int programDays =
+                selectedProgramDays;
+
+            bool hasValidSingleReplacement =
+                useReplacementOfficers &&
+                totalOfficerCount == programDays + 1 &&
+                replacementCount == 1 &&
+                officers.Any(
+                    delegate (Officer officer)
+                    {
+                        return officer != null &&
+                               officer.IsReplacement &&
+                               officer.Score == 2.0;
+                    });
+
+            if (guideCard.TotalStatusLabel != null)
+            {
+                if (programDays <= 0)
+                {
+                    guideCard.TotalStatusLabel.Text =
+                        "تعداد روزهای برنامه مشخص نشده است.";
+
+                    guideCard.TotalStatusLabel.Foreground =
+                        new System.Windows.Media.SolidColorBrush(
+                            (System.Windows.Media.Color)
+                            System.Windows.Media.ColorConverter
+                                .ConvertFromString("#64748B"));
+                }
+                else if (totalOfficerCount > programDays + 1)
+                {
+                    guideCard.TotalStatusLabel.Text =
+                        "❌ تعداد نیروها بیش از یک نفر از حد مجاز بیشتر است.";
+
+                    guideCard.TotalStatusLabel.Foreground =
+                        new System.Windows.Media.SolidColorBrush(
+                            (System.Windows.Media.Color)
+                            System.Windows.Media.ColorConverter
+                                .ConvertFromString("#DC2626"));
+                }
+                else if (totalOfficerCount == programDays + 1)
+                {
+                    if (hasValidSingleReplacement)
+                    {
+                        guideCard.TotalStatusLabel.Text =
+                            "✓ " +
+                            ToPersianNumber(programDays) +
+                            " نیروی عادی + ۱ نیروی جایگزین؛ وضعیت مجاز است.";
+
+                        guideCard.TotalStatusLabel.Foreground =
+                            new System.Windows.Media.SolidColorBrush(
+                                (System.Windows.Media.Color)
+                                System.Windows.Media.ColorConverter
+                                    .ConvertFromString("#059669"));
+                    }
+                    else
+                    {
+                        guideCard.TotalStatusLabel.Text =
+                            "❌ یک نفر اضافه وجود دارد؛ باید دقیقاً یک نیروی امتیاز ۲ به‌عنوان جایگزین ثبت شده باشد.";
+
+                        guideCard.TotalStatusLabel.Foreground =
+                            new System.Windows.Media.SolidColorBrush(
+                                (System.Windows.Media.Color)
+                                System.Windows.Media.ColorConverter
+                                    .ConvertFromString("#DC2626"));
+                    }
+                }
+                else if (totalOfficerCount == programDays &&
+                         useReplacementOfficers)
+                {
+                    guideCard.TotalStatusLabel.Text =
+                        "✓ تعداد نیروها برابر روزهاست؛ امکان افزودن دقیقاً ۱ نیروی جایگزین امتیاز ۲ وجود دارد.";
+
+                    guideCard.TotalStatusLabel.Foreground =
+                        new System.Windows.Media.SolidColorBrush(
+                            (System.Windows.Media.Color)
+                            System.Windows.Media.ColorConverter
+                                .ConvertFromString("#059669"));
+                }
+                else if (totalOfficerCount == programDays)
+                {
+                    guideCard.TotalStatusLabel.Text =
+                        "✓ تعداد نیروها با تعداد روزهای برنامه برابر است.";
+
+                    guideCard.TotalStatusLabel.Foreground =
+                        new System.Windows.Media.SolidColorBrush(
+                            (System.Windows.Media.Color)
+                            System.Windows.Media.ColorConverter
+                                .ConvertFromString("#059669"));
+                }
+                else
+                {
+                    guideCard.TotalStatusLabel.Text =
+                        "✓ تعداد نیروها کمتر از روزهای برنامه است؛ بررسی اضافه بودن نیرو لازم نیست.";
+
+                    guideCard.TotalStatusLabel.Foreground =
+                        new System.Windows.Media.SolidColorBrush(
+                            (System.Windows.Media.Color)
+                            System.Windows.Media.ColorConverter
+                                .ConvertFromString("#059669"));
+                }
+            }
+
             foreach (double score in
                      new double[] { 0.5, 1.0, 2.0 })
             {
@@ -1352,56 +1740,69 @@ namespace HamedShahbazi.Win7
                     continue;
                 }
 
-
                 int currentCount =
                     officers.Count(
                         delegate (Officer officer)
                         {
-                            return officer.Score == score;
+                            return officer != null &&
+                                   officer.Score == score;
                         });
-
 
                 int maxCapacity =
                     capacity.ContainsKey(score)
                         ? capacity[score]
                         : 0;
 
+                bool replacementSlotAvailable =
+                    useReplacementOfficers &&
+                    totalOfficerCount == programDays &&
+                    score == 2.0;
+
+                bool replacementIsFilled =
+                    hasValidSingleReplacement &&
+                    score == 2.0;
+
+                int effectiveMaxCapacity =
+                    maxCapacity +
+                    ((replacementSlotAvailable ||
+                      replacementIsFilled) ? 1 : 0);
 
                 int remaining =
-                    maxCapacity -
+                    effectiveMaxCapacity -
                     currentCount;
-
-
-                // ==========================================
-                // تعداد فعلی
-                // ==========================================
 
                 scoreUI.CurrentLabel.Text =
                     "تعداد فعلی: " +
                     ToPersianNumber(currentCount) +
                     " نفر";
 
-
-                // ==========================================
-                // ظرفیت
-                // ==========================================
-
                 scoreUI.CapacityLabel.Text =
                     "ظرفیت: " +
-                    ToPersianNumber(maxCapacity) +
+                    ToPersianNumber(effectiveMaxCapacity) +
                     " نفر";
 
-
-                // ==========================================
-                // باقی مانده
-                // ==========================================
+                if (score == 2.0 &&
+                    useReplacementOfficers)
+                {
+                    scoreUI.DescriptionLabel.Text =
+                        "سه‌شنبه و چهارشنبه • سه پاس در هفته • +۱ جایگزین امتیاز ۲";
+                }
+                else if (score == 0.5)
+                {
+                    scoreUI.DescriptionLabel.Text =
+                        "پنجشنبه و جمعه • یک پاس در هفته";
+                }
+                else
+                {
+                    scoreUI.DescriptionLabel.Text =
+                        "شنبه تا دوشنبه • دو پاس در هفته";
+                }
 
                 if (remaining < 0)
                 {
                     scoreUI.RemainingLabel.Text =
                         "مازاد: " +
-                        ToPersianNumber(
-                            Math.Abs(remaining)) +
+                        ToPersianNumber(Math.Abs(remaining)) +
                         " نفر";
 
                     scoreUI.RemainingLabel.Foreground =
@@ -1424,14 +1825,9 @@ namespace HamedShahbazi.Win7
                                 .ConvertFromString("#059669"));
                 }
 
-
-                // ==========================================
-                // وضعیت
-                // ==========================================
-
                 System.Windows.Media.Color statusColor;
 
-                if (currentCount > maxCapacity)
+                if (currentCount > effectiveMaxCapacity)
                 {
                     scoreUI.StatusLabel.Text =
                         "⚠ ظرفیت تکمیل شده و بیشتر از حد مجاز است";
@@ -1441,15 +1837,21 @@ namespace HamedShahbazi.Win7
                         System.Windows.Media.ColorConverter
                             .ConvertFromString("#DC2626");
                 }
-                else if (currentCount == maxCapacity)
+                else if (currentCount == effectiveMaxCapacity)
                 {
                     scoreUI.StatusLabel.Text =
-                        "⚠ ظرفیت تکمیل شده";
+                        replacementSlotAvailable || replacementIsFilled
+                            ? "✓ ظرفیت عادی + جایگزین مجاز"
+                            : "⚠ ظرفیت تکمیل شده";
 
                     statusColor =
-                        (System.Windows.Media.Color)
-                        System.Windows.Media.ColorConverter
-                            .ConvertFromString("#D97706");
+                        replacementSlotAvailable || replacementIsFilled
+                            ? (System.Windows.Media.Color)
+                              System.Windows.Media.ColorConverter
+                                  .ConvertFromString("#059669")
+                            : (System.Windows.Media.Color)
+                              System.Windows.Media.ColorConverter
+                                  .ConvertFromString("#D97706");
                 }
                 else
                 {
@@ -1462,55 +1864,221 @@ namespace HamedShahbazi.Win7
                             .ConvertFromString("#059669");
                 }
 
-
                 scoreUI.StatusLabel.Foreground =
                     new System.Windows.Media.SolidColorBrush(
                         statusColor);
 
-
-                // ==========================================
-                // درصد
-                // ==========================================
-
                 double progress =
                     0;
 
-
-                if (maxCapacity > 0)
+                if (effectiveMaxCapacity > 0)
                 {
                     progress =
                         (double)currentCount /
-                        (double)maxCapacity;
-
+                        (double)effectiveMaxCapacity;
 
                     if (progress > 1)
                         progress = 1;
                 }
 
-
                 int percent =
                     (int)Math.Round(
                         progress * 100);
-
 
                 scoreUI.PercentLabel.Text =
                     ToPersianNumber(percent) +
                     "٪";
 
-
                 scoreUI.PercentLabel.Foreground =
                     new System.Windows.Media.SolidColorBrush(
                         statusColor);
 
-
                 scoreUI.ProgressBar.Value =
                     progress;
-
 
                 scoreUI.ProgressBar.Foreground =
                     new System.Windows.Media.SolidColorBrush(
                         statusColor);
             }
+        }
+
+        private void UpdateReplacementGuideSection()
+        {
+            if (GuideReplacementSection == null)
+                return;
+
+            GuideReplacementSection.Visibility =
+                Visibility.Visible;
+
+            if (!useReplacementOfficers)
+            {
+                GuideReplacementStatusLabel.Text =
+                    "نیروی جایگزین غیرفعال است. در این حالت تعداد افراد هر لیست نباید بیشتر از تعداد روزهای برنامه باشد.";
+
+                GuideReplacementStatusLabel.Foreground =
+                    new System.Windows.Media.SolidColorBrush(
+                        (System.Windows.Media.Color)
+                        System.Windows.Media.ColorConverter
+                            .ConvertFromString("#64748B"));
+            }
+            else
+            {
+                GuideReplacementStatusLabel.Text =
+                    "نیروی جایگزین فعال است؛ فقط وقتی تعداد افراد یک لیست دقیقاً برابر با تعداد روزها باشد، یک نفر جایگزین مجاز است و جایگزین باید امتیاز ۲ داشته باشد.";
+
+                GuideReplacementStatusLabel.Foreground =
+                    new System.Windows.Media.SolidColorBrush(
+                        (System.Windows.Media.Color)
+                        System.Windows.Media.ColorConverter
+                            .ConvertFromString("#047857"));
+            }
+
+            UpdateReplacementGuideLine(
+                GuideReplacementGuardLabel,
+                "افسر پاسدار",
+                guardOfficers);
+
+            UpdateReplacementGuideLine(
+                GuideReplacementReserveLabel,
+                "افسر جانشین",
+                reserveOfficers);
+
+            UpdateReplacementGuideLine(
+                GuideReplacementChiefLabel,
+                "افسر سر",
+                chiefOfficers);
+        }
+
+        private void UpdateReplacementGuideLine(
+            TextBlock label,
+            string role,
+            List<Officer> officers)
+        {
+            if (label == null)
+                return;
+
+            int count =
+                officers != null
+                    ? officers.Count
+                    : 0;
+
+            int replacementCount =
+                officers != null
+                    ? officers.Count(
+                        delegate (Officer officer)
+                        {
+                            return officer != null &&
+                                   officer.IsReplacement;
+                        })
+                    : 0;
+
+            int programDays =
+                selectedProgramDays;
+
+            if (!useReplacementOfficers)
+            {
+                if (count > programDays)
+                {
+                    label.Text =
+                        "❌ " + role + " — " +
+                        ToPersianNumber(count) +
+                        " نفر برای " +
+                        ToPersianNumber(programDays) +
+                        " روز؛ تعداد بیشتر از روزهاست.";
+                    label.Foreground =
+                        new System.Windows.Media.SolidColorBrush(
+                            (System.Windows.Media.Color)
+                            System.Windows.Media.ColorConverter
+                                .ConvertFromString("#DC2626"));
+                }
+                else
+                {
+                    label.Text =
+                        "✓ " + role + " — " +
+                        ToPersianNumber(count) +
+                        " نفر برای " +
+                        ToPersianNumber(programDays) +
+                        " روز؛ وضعیت مجاز است.";
+                    label.Foreground =
+                        new System.Windows.Media.SolidColorBrush(
+                            (System.Windows.Media.Color)
+                            System.Windows.Media.ColorConverter
+                                .ConvertFromString("#059669"));
+                }
+
+                return;
+            }
+
+            if (count > programDays + 1)
+            {
+                label.Text =
+                    "❌ " + role + " — بیش از یک نفر اضافه است؛ فقط یک جایگزین مجاز است.";
+                label.Foreground =
+                    new System.Windows.Media.SolidColorBrush(
+                        (System.Windows.Media.Color)
+                        System.Windows.Media.ColorConverter
+                            .ConvertFromString("#DC2626"));
+                return;
+            }
+
+            if (count == programDays + 1)
+            {
+                bool valid =
+                    replacementCount == 1 &&
+                    officers != null &&
+                    officers.Any(
+                        delegate (Officer officer)
+                        {
+                            return officer != null &&
+                                   officer.IsReplacement &&
+                                   officer.Score == 2.0;
+                        });
+
+                label.Text =
+                    valid
+                        ? "✓ " + role + " — " +
+                          ToPersianNumber(programDays) +
+                          " نیروی عادی + ۱ جایگزین امتیاز ۲؛ مجاز است."
+                        : "❌ " + role + " — نفر اضافه باید دقیقاً یک جایگزین امتیاز ۲ باشد.";
+
+                label.Foreground =
+                    new System.Windows.Media.SolidColorBrush(
+                        (System.Windows.Media.Color)
+                        System.Windows.Media.ColorConverter
+                            .ConvertFromString(
+                                valid ? "#059669" : "#DC2626"));
+                return;
+            }
+
+            if (count == programDays)
+            {
+                label.Text =
+                    "✓ " + role + " — " +
+                    ToPersianNumber(count) +
+                    " نفر برای " +
+                    ToPersianNumber(programDays) +
+                    " روز؛ امکان افزودن دقیقاً ۱ جایگزین امتیاز ۲ وجود دارد.";
+
+                label.Foreground =
+                    new System.Windows.Media.SolidColorBrush(
+                        (System.Windows.Media.Color)
+                        System.Windows.Media.ColorConverter
+                            .ConvertFromString("#059669"));
+                return;
+            }
+
+            label.Text =
+                "✓ " + role + " — " +
+                ToPersianNumber(count) +
+                " نفر برای " +
+                ToPersianNumber(programDays) +
+                " روز؛ نیازی به جایگزین نیست.";
+
+            label.Foreground =
+                new System.Windows.Media.SolidColorBrush(
+                    (System.Windows.Media.Color)
+                    System.Windows.Media.ColorConverter
+                        .ConvertFromString("#059669"));
         }
 
         private string ToPersianNumber(
@@ -1944,7 +2512,7 @@ namespace HamedShahbazi.Win7
                     ToGregorianDate(1406, 3, 15),
                    "قیام خونین 15 خرداد"
                 }
-              
+
                 ,
 
                 {
@@ -2269,8 +2837,18 @@ namespace HamedShahbazi.Win7
             object sender,
             System.ComponentModel.CancelEventArgs e)
         {
-            SaveOfficerData();
+            // وضعیت واقعی Checkbox را در لحظه خروج بخوان
+            useReplacementOfficers =
+                ReplacementCheckBox != null &&
+                ReplacementCheckBox.IsChecked == true;
+
+            // ذخیره تنظیمات
             SaveSettings();
+
+            // ذخیره اطلاعات نیروها
+            SaveOfficerData();
+
+            // ذخیره برنامه و چرخه جایگزین
             SaveCurrentProgram();
         }
         private void ApplyResponsiveScheduleLayout()
@@ -3022,16 +3600,42 @@ namespace HamedShahbazi.Win7
 
                 useReplacementOfficers =
                     settings.ReplacementEnabled;
+                usedReplacementGuards.Clear();
+                usedReplacementReserves.Clear();
+                usedReplacementChiefs.Clear();
 
-
-                replacementCountPerGroup =
-                    settings.ReplacementCount;
-
-                if (replacementCountPerGroup < 1 ||
-                    replacementCountPerGroup > 3)
+                if (settings.UsedReplacementGuards != null)
                 {
-                    replacementCountPerGroup = 1;
+                    foreach (string name
+                             in settings.UsedReplacementGuards)
+                    {
+                        usedReplacementGuards.Add(name);
+                    }
                 }
+
+                if (settings.UsedReplacementReserves != null)
+                {
+                    foreach (string name
+                             in settings.UsedReplacementReserves)
+                    {
+                        usedReplacementReserves.Add(name);
+                    }
+                }
+
+                if (settings.UsedReplacementChiefs != null)
+                {
+                    foreach (string name
+                             in settings.UsedReplacementChiefs)
+                    {
+                        usedReplacementChiefs.Add(name);
+                    }
+                }
+
+                // ==========================================
+                // تعداد جایگزین در هر لیست
+                // همیشه دقیقاً ۱ نفر
+                // ==========================================
+                replacementCountPerGroup = 1;
 
 
                 // ==========================================
@@ -3056,23 +3660,14 @@ namespace HamedShahbazi.Win7
 
                 isLoadingSettings = true;
 
+                ReplacementCheckBox.IsChecked =
+                    useReplacementOfficers;
 
                 SelectDayCount(
                     selectedProgramDays);
 
-
-                ReplacementCheckBox.IsChecked =
-                    useReplacementOfficers;
-
-
-                ReplacementCountPicker.SelectedIndex =
-                    replacementCountPerGroup - 1;
-
-
-                ReplacementCountPicker.IsEnabled =
-                    useReplacementOfficers;
-
-
+                ReplacementCountPicker.SelectedIndex = 0;
+                ReplacementCountPicker.IsEnabled = false;
                 NotificationsEnabledCheckBox.IsChecked =
                     notificationsEnabled;
 
@@ -3111,228 +3706,47 @@ namespace HamedShahbazi.Win7
         {
             try
             {
-                // ==========================================
-                // حذف وضعیت جایگزین قبلی
-                // ==========================================
-
-                foreach (Officer officer in guardOfficers)
-                    officer.IsReplacement = false;
-
-                foreach (Officer officer in reserveOfficers)
-                    officer.IsReplacement = false;
-
-                foreach (Officer officer in chiefOfficers)
-                    officer.IsReplacement = false;
-
-
-                // ==========================================
-                // اگر قابلیت جایگزین خاموش است
-                // ==========================================
-
                 if (!useReplacementOfficers)
                 {
+                    foreach (Officer officer in guardOfficers)
+                        officer.IsReplacement = false;
+
+                    foreach (Officer officer in reserveOfficers)
+                        officer.IsReplacement = false;
+
+                    foreach (Officer officer in chiefOfficers)
+                        officer.IsReplacement = false;
+
+                    replacementOfficers.Clear();
                     SaveOfficerData();
                     return;
                 }
 
+                // =====================================================
+                // وقتی نیروی جایگزین فعال است:
+                //
+                // 1) اگر تعداد افراد کمتر از روزها باشد:
+                //    یک نفر از بین نیروهای امتیاز ۲ به‌عنوان جایگزین انتخاب شود.
+                //
+                // 2) اگر تعداد افراد دقیقاً برابر روزها باشد:
+                //    هیچ جایگزین خودکاری اضافه نشود.
+                //    کاربر می‌تواند یک نفر اضافه کند که همان نفر جایگزین شود.
+                //
+                // 3) اگر تعداد افراد یک نفر بیشتر از روزها باشد:
+                //    باید همان یک نفر، جایگزین امتیاز ۲ باشد.
+                // =====================================================
 
-                // ==========================================
-                // تعداد جایگزین در هر گروه
-                // ==========================================
+                SelectReplacementForList(
+                    "افسر پاسدار",
+                    guardOfficers);
 
-                int count =
-                    replacementCountPerGroup;
+                SelectReplacementForList(
+                    "افسر جانشین",
+                    reserveOfficers);
 
-                if (count < 1)
-                    count = 1;
-
-                if (count > 3)
-                    count = 3;
-
-
-                // ==========================================
-                // تابع انتخاب چرخه‌ای
-                // فقط امتیاز 2
-                // ==========================================
-
-                List<Officer> SelectFromCycle(
-                    List<Officer> officers,
-                    HashSet<string> usedHistory,
-                    int number)
-                {
-                    List<Officer> candidates =
-                        officers
-                            .Where(x => x.Score == 2)
-                            .ToList();
-
-
-                    if (candidates.Count == 0)
-                        return new List<Officer>();
-
-
-                    // حذف افرادی که دیگر در لیست نیستند
-                    usedHistory.RemoveWhere(
-                        name =>
-                            !candidates.Any(
-                                x =>
-                                    string.Equals(
-                                        x.Name,
-                                        name,
-                                        StringComparison.OrdinalIgnoreCase)));
-
-
-                    // نیروهایی که در چرخه فعلی انتخاب نشده‌اند
-                    List<Officer> remaining =
-                        candidates
-                            .Where(
-                                x =>
-                                    !usedHistory.Contains(
-                                        x.Name))
-                            .ToList();
-
-
-                    ShuffleList(remaining);
-
-
-                    List<Officer> selected =
-                        new List<Officer>();
-
-
-                    // انتخاب از چرخه فعلی
-                    int takeCount =
-                        Math.Min(
-                            number,
-                            remaining.Count);
-
-
-                    for (int i = 0;
-                         i < takeCount;
-                         i++)
-                    {
-                        selected.Add(
-                            remaining[i]);
-                    }
-
-
-                    // ثبت در سابقه
-                    foreach (Officer officer in selected)
-                    {
-                        usedHistory.Add(
-                            officer.Name);
-                    }
-
-
-                    // ==========================================
-                    // اگر به تعداد لازم نرسیدیم
-                    // چرخه از اول شروع می‌شود
-                    // ==========================================
-
-                    if (selected.Count < number)
-                    {
-                        usedHistory.Clear();
-
-
-                        List<Officer> newCycleCandidates =
-                            candidates
-                                .Where(
-                                    x =>
-                                        !selected.Contains(x))
-                                .ToList();
-
-
-                        ShuffleList(
-                            newCycleCandidates);
-
-
-                        int remainingCount =
-                            number -
-                            selected.Count;
-
-
-                        List<Officer> newSelected =
-                            newCycleCandidates
-                                .Take(remainingCount)
-                                .ToList();
-
-
-                        selected.AddRange(
-                            newSelected);
-
-
-                        foreach (Officer officer in selected)
-                        {
-                            usedHistory.Add(
-                                officer.Name);
-                        }
-                    }
-
-
-                    return selected;
-                }
-
-
-                // ==========================================
-                // گروه پاسدار
-                // ==========================================
-
-                List<Officer> guardReplacements =
-                    SelectFromCycle(
-                        guardOfficers,
-                        usedReplacementGuards,
-                        count);
-
-
-                foreach (Officer officer
-                         in guardReplacements)
-                {
-                    officer.IsReplacement =
-                        true;
-                }
-
-
-                // ==========================================
-                // گروه جانشین
-                // ==========================================
-
-                List<Officer> reserveReplacements =
-                    SelectFromCycle(
-                        reserveOfficers,
-                        usedReplacementReserves,
-                        count);
-
-
-                foreach (Officer officer
-                         in reserveReplacements)
-                {
-                    officer.IsReplacement =
-                        true;
-                }
-
-
-                // ==========================================
-                // گروه افسر سر
-                // ==========================================
-
-                List<Officer> chiefReplacements =
-                    SelectFromCycle(
-                        chiefOfficers,
-                        usedReplacementChiefs,
-                        count);
-
-
-                foreach (Officer officer
-                         in chiefReplacements)
-                {
-                    officer.IsReplacement =
-                        true;
-                }
-
-
-
-
-                // ==========================================
-                // ذخیره
-                // ==========================================
+                SelectReplacementForList(
+                    "افسر سر",
+                    chiefOfficers);
 
                 SaveOfficerData();
                 RefreshOfficerLists();
@@ -3341,13 +3755,379 @@ namespace HamedShahbazi.Win7
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    "خطا در انتخاب نیروهای جایگزین:\n\n" +
+                    "خطا در بررسی نیروهای جایگزین:\n\n" +
                     ex.Message,
                     "خطا",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
         }
+
+        private void SelectReplacementForList(
+         string role,
+         List<Officer> officers)
+        {
+            if (officers == null)
+                return;
+
+            int count = officers.Count;
+
+            // ---------------------------------------------------------
+            // انتخاب سابقه چرخه متناسب با لیست
+            // ---------------------------------------------------------
+            HashSet<string> usedHistory = null;
+
+            if (role == "افسر پاسدار")
+                usedHistory = usedReplacementGuards;
+            else if (role == "افسر جانشین")
+                usedHistory = usedReplacementReserves;
+            else if (role == "افسر سر")
+                usedHistory = usedReplacementChiefs;
+
+            if (usedHistory == null)
+                return;
+
+            // ---------------------------------------------------------
+            // حالت ۱:
+            // تعداد افراد کمتر از تعداد روزها
+            //
+            // با فعال بودن تیک جایگزین، یک نفر از امتیاز ۲
+            // باید به‌عنوان جایگزین انتخاب شود.
+            //
+            // انتخاب به‌صورت چرخه‌ای است.
+            // ---------------------------------------------------------
+            if (count < selectedProgramDays)
+            {
+                // جایگزین قبلی این لیست را بردار
+                foreach (Officer officer in officers)
+                {
+                    if (officer != null)
+                        officer.IsReplacement = false;
+                }
+
+                List<Officer> candidates =
+                    officers
+                        .Where(
+                            delegate (Officer officer)
+                            {
+                                return officer != null &&
+                                       officer.Score == 2.0;
+                            })
+                        .ToList();
+
+                if (candidates.Count == 0)
+                {
+                    throw new InvalidOperationException(
+                        role +
+                        ": برای فعال بودن نیروی جایگزین، حداقل یک نیروی امتیاز ۲ لازم است.");
+                }
+
+                // حذف افراد دیگر از سابقه چرخه
+                usedHistory.RemoveWhere(
+                    delegate (string name)
+                    {
+                        return !candidates.Any(
+                            delegate (Officer officer)
+                            {
+                                return string.Equals(
+                                    officer.Name,
+                                    name,
+                                    StringComparison.OrdinalIgnoreCase);
+                            });
+                    });
+
+                // -----------------------------------------------------
+                // فقط افرادی که در چرخه فعلی هنوز انتخاب نشده‌اند
+                // -----------------------------------------------------
+                List<Officer> remaining =
+                    candidates
+                        .Where(
+                            delegate (Officer officer)
+                            {
+                                return !usedHistory.Contains(
+                                    officer.Name);
+                            })
+                        .ToList();
+
+                // اگر همه افراد چرخه قبلی استفاده شده‌اند،
+                // چرخه از اول شروع شود.
+                if (remaining.Count == 0)
+                {
+                    usedHistory.Clear();
+                    remaining =
+                        candidates.ToList();
+                }
+
+                // ترتیب انتخاب تصادفی، ولی بدون تکرار
+                ShuffleList(remaining);
+
+                Officer replacement =
+                    remaining.FirstOrDefault();
+
+                if (replacement == null)
+                {
+                    throw new InvalidOperationException(
+                        role +
+                        ": انتخاب نیروی جایگزین انجام نشد.");
+                }
+
+                replacement.IsReplacement = true;
+
+                // ثبت در چرخه
+                usedHistory.Add(
+                    replacement.Name);
+
+                return;
+            }
+
+            // ---------------------------------------------------------
+            // حالت ۲:
+            // تعداد افراد دقیقاً برابر تعداد روزهاست.
+            //
+            // هنوز نفر اضافه‌ای وجود ندارد، پس جایگزین خودکار
+            // انتخاب نمی‌شود.
+            // ---------------------------------------------------------
+            if (count == selectedProgramDays)
+            {
+                // در حالت برابر بودن تعداد نیرو و روزها،
+                // با فعال بودن جایگزین، یک نفر از همین لیست
+                // به‌صورت چرخه‌ای به‌عنوان جایگزین انتخاب می‌شود.
+                foreach (Officer officer in officers)
+                {
+                    if (officer != null)
+                        officer.IsReplacement = false;
+                }
+
+                List<Officer> candidates =
+                    officers
+                        .Where(
+                            delegate (Officer officer)
+                            {
+                                return officer != null &&
+                                       officer.Score == 2.0;
+                            })
+                        .ToList();
+
+                if (candidates.Count == 0)
+                {
+                    throw new InvalidOperationException(
+                        role +
+                        ": برای انتخاب نیروی جایگزین، حداقل یک نیروی امتیاز ۲ لازم است.");
+                }
+
+                usedHistory.RemoveWhere(
+                    delegate (string name)
+                    {
+                        return !candidates.Any(
+                            delegate (Officer officer)
+                            {
+                                return string.Equals(
+                                    officer.Name,
+                                    name,
+                                    StringComparison.OrdinalIgnoreCase);
+                            });
+                    });
+
+                List<Officer> remaining =
+                    candidates
+                        .Where(
+                            delegate (Officer officer)
+                            {
+                                return !usedHistory.Contains(
+                                    officer.Name);
+                            })
+                        .ToList();
+
+                if (remaining.Count == 0)
+                {
+                    usedHistory.Clear();
+                    remaining = candidates.ToList();
+                }
+
+                ShuffleList(remaining);
+
+                Officer replacement =
+                    remaining.FirstOrDefault();
+
+                if (replacement == null)
+                {
+                    throw new InvalidOperationException(
+                        role +
+                        ": انتخاب نیروی جایگزین انجام نشد.");
+                }
+
+                replacement.IsReplacement = true;
+
+                usedHistory.Add(
+                    replacement.Name);
+
+                return;
+            }
+
+            // ---------------------------------------------------------
+            // حالت ۳:
+            // دقیقاً یک نفر بیشتر از تعداد روزها
+            //
+            // همان یک نفر باید جایگزین امتیاز ۲ باشد.
+            // ---------------------------------------------------------
+            if (count == selectedProgramDays + 1)
+            {
+                // همه جایگزین‌های قبلی را پاک می‌کنیم
+                // تا انتخاب جدید از چرخه انجام شود.
+                foreach (Officer officer in officers)
+                {
+                    if (officer != null)
+                        officer.IsReplacement = false;
+                }
+
+                List<Officer> candidates =
+                    officers
+                        .Where(
+                            delegate (Officer officer)
+                            {
+                                return officer != null &&
+                                       officer.Score == 2.0;
+                            })
+                        .ToList();
+
+                if (candidates.Count == 0)
+                {
+                    throw new InvalidOperationException(
+                        role +
+                        ": برای انتخاب نیروی جایگزین، حداقل یک نیروی امتیاز ۲ لازم است.");
+                }
+
+                // افرادی که دیگر در لیست نیستند
+                // از تاریخچه چرخه حذف شوند.
+                usedHistory.RemoveWhere(
+                    delegate (string name)
+                    {
+                        return !candidates.Any(
+                            delegate (Officer officer)
+                            {
+                                return string.Equals(
+                                    officer.Name,
+                                    name,
+                                    StringComparison.OrdinalIgnoreCase);
+                            });
+                    });
+
+                // نیروهایی که در چرخه فعلی هنوز انتخاب نشده‌اند
+                List<Officer> remaining =
+                    candidates
+                        .Where(
+                            delegate (Officer officer)
+                            {
+                                return !usedHistory.Contains(
+                                    officer.Name);
+                            })
+                        .ToList();
+
+                // اگر همه افراد امتیاز ۲ یک بار انتخاب شده‌اند،
+                // چرخه از اول شروع شود.
+                if (remaining.Count == 0)
+                {
+                    usedHistory.Clear();
+                    remaining = candidates.ToList();
+                }
+
+                // ترتیب تصادفی، ولی بدون تکرار تا پایان چرخه
+                ShuffleList(remaining);
+
+                Officer replacement =
+                    remaining.FirstOrDefault();
+
+                if (replacement == null)
+                {
+                    throw new InvalidOperationException(
+                        role +
+                        ": انتخاب نیروی جایگزین انجام نشد.");
+                }
+
+                replacement.IsReplacement = true;
+
+                // ثبت این نفر در چرخه
+                usedHistory.Add(
+                    replacement.Name);
+
+                return;
+            }
+
+            // ---------------------------------------------------------
+            // بیشتر از یک نفر اضافه
+            // ---------------------------------------------------------
+            throw new InvalidOperationException(
+                role +
+                ": تعداد نیروها بیشتر از حد مجاز است. " +
+                "حداکثر یک نفر اضافه به‌عنوان جایگزین مجاز است.");
+        }
+        private void ValidateAndNormalizeReplacementList(
+            string role,
+            List<Officer> officers)
+        {
+            if (officers == null)
+                return;
+
+            int count =
+                officers.Count;
+
+            int replacementCount =
+                officers.Count(
+                    delegate (Officer officer)
+                    {
+                        return officer != null &&
+                               officer.IsReplacement;
+                    });
+
+            // اگر تعداد افراد حداکثر برابر روزهاست،
+            // وجود پرچم جایگزین قدیمی معتبر نیست.
+            if (count <= selectedProgramDays)
+            {
+                foreach (Officer officer in officers)
+                {
+                    if (officer != null)
+                        officer.IsReplacement = false;
+                }
+
+                return;
+            }
+
+            // دقیقاً یک نفر بیشتر از روزها:
+            // باید دقیقاً همان یک نفر جایگزین امتیاز ۲ باشد.
+            if (count == selectedProgramDays + 1)
+            {
+                if (replacementCount != 1)
+                {
+                    throw new InvalidOperationException(
+                        role +
+                        ": برای یک نفر اضافه، دقیقاً یک نیروی جایگزین باید ثبت شده باشد.");
+                }
+
+                Officer replacement =
+                    officers.FirstOrDefault(
+                        delegate (Officer officer)
+                        {
+                            return officer != null &&
+                                   officer.IsReplacement;
+                        });
+
+                if (replacement == null ||
+                    replacement.Score != 2.0)
+                {
+                    throw new InvalidOperationException(
+                        role +
+                        ": نیروی اضافه باید با امتیاز ۲ و به‌عنوان نیروی جایگزین ثبت شده باشد.");
+                }
+
+                return;
+            }
+
+            throw new InvalidOperationException(
+                role +
+                ": تعداد نیروها بیشتر از حد مجاز است. " +
+                "با نیروی جایگزین نیز فقط یک نفر اضافه مجاز است.");
+        }
+
         private void ShuffleList<T>(List<T> list)
         {
             for (int i = list.Count - 1;
@@ -3396,14 +4176,17 @@ namespace HamedShahbazi.Win7
                     return;
                 }
                 // ==========================================
-                // بررسی ظرفیت قبل از ایجاد برنامه
+                // برنامه جدید از تاریخ امروز شروع می‌شود.
+                // این مقدار باید قبل از اعتبارسنجی ظرفیت امتیازها
+                // تنظیم شود، چون ظرفیت بر اساس روزهای هفته محاسبه می‌شود.
                 // ==========================================
-                if (!ValidateOfficerCapacity())
-                {
-                    return;
-                }
+                currentProgramStartDate =
+                    DateTime.Now.Date;
+
                 // ==========================================
                 // مدیریت نیروهای جایگزین
+                // باید قبل از اعتبارسنجی انجام شود
+                // تا اعتبارسنجی وضعیت واقعی لیست‌ها را ببیند.
                 // ==========================================
 
                 if (useReplacementOfficers)
@@ -3425,10 +4208,17 @@ namespace HamedShahbazi.Win7
                     foreach (Officer officer in chiefOfficers)
                         officer.IsReplacement = false;
 
-                    // خالی کردن لیست مستقل
                     replacementOfficers.Clear();
 
                     SaveOfficerData();
+                }
+
+                // ==========================================
+                // بررسی ظرفیت بعد از تعیین جایگزین
+                // ==========================================
+                if (!ValidateOfficerCapacity())
+                {
+                    return;
                 }
                 // ==========================================
                 // انتخاب نیروهای جایگزین
@@ -3438,16 +4228,87 @@ namespace HamedShahbazi.Win7
 
 
 
-                currentProgramStartDate =
-                    DateTime.Now.Date;
+                // ==========================================
+                // نیروی جایگزین عضو ظرفیت عملیاتی برنامه نیست.
+                // در حالت ویژه 24 روز + 25 نفر، یک نفر از هر لیست
+                // به‌عنوان جایگزین کنار گذاشته می‌شود تا موتور برنامه‌ریزی
+                // فقط نیروهای عادی (مثلاً 24 نفر برای 24 روز) را ببیند.
+                // ==========================================
+                // =====================================================
+                // آماده‌سازی نیروهای واقعی برای موتور برنامه‌ریزی
+                //
+                // حالت عادی:
+                // همه نیروها وارد برنامه‌ریزی می‌شوند.
+                //
+                // حالت تعداد افراد = تعداد روز + 1:
+                // یک نفر جایگزین است و از نیروهای عملیاتی کنار گذاشته می‌شود.
+                //
+                // حالت تعداد افراد = تعداد روز:
+                // جایگزین برای یکی از نیروها تعریف شده، اما چون
+                // تعداد نیروهای عادی باید همچنان برابر تعداد روزها باشد،
+                // جایگزین از لیست عملیاتی حذف نمی‌شود.
+                // =====================================================
+
+                List<Officer> guardSchedulingOfficers =
+                    guardOfficers
+                        .Where(delegate (Officer officer)
+                        {
+                            if (officer == null)
+                                return false;
+
+                            // اگر یک نفر اضافه داریم، جایگزین از عملیات حذف شود.
+                            if (guardOfficers.Count ==
+                                selectedProgramDays + 1)
+                            {
+                                return !officer.IsReplacement;
+                            }
+
+                            // در حالت برابر، جایگزین همچنان نیروی عملیاتی است.
+                            return true;
+                        })
+                        .ToList();
+
+                List<Officer> reserveSchedulingOfficers =
+                    reserveOfficers
+                        .Where(delegate (Officer officer)
+                        {
+                            if (officer == null)
+                                return false;
+
+                            if (reserveOfficers.Count ==
+                                selectedProgramDays + 1)
+                            {
+                                return !officer.IsReplacement;
+                            }
+
+                            return true;
+                        })
+                        .ToList();
+
+                List<Officer> chiefSchedulingOfficers =
+                    chiefOfficers
+                        .Where(delegate (Officer officer)
+                        {
+                            if (officer == null)
+                                return false;
+
+                            if (chiefOfficers.Count ==
+                                selectedProgramDays + 1)
+                            {
+                                return !officer.IsReplacement;
+                            }
+
+                            return true;
+                        })
+                        .ToList();
 
                 schedule =
                     scheduleGenerator.Generate(
                         selectedProgramDays,
                         currentProgramStartDate,
-                        guardOfficers,
-                        reserveOfficers,
-                        chiefOfficers);
+                        guardSchedulingOfficers,
+                        reserveSchedulingOfficers,
+                        chiefSchedulingOfficers);
 
                 // ذخیره دائمی برنامه فعلی
                 SaveCurrentProgram();
@@ -3601,20 +4462,19 @@ namespace HamedShahbazi.Win7
             if (isLoadingSettings)
                 return;
 
-            useReplacementOfficers = true;
+            useReplacementOfficers =
+                ReplacementCheckBox.IsChecked == true;
 
-            ReplacementCountPicker.IsEnabled =
-                true;
+            // تعداد جایگزین همیشه ۱ نفر در هر لیست است.
+            replacementCountPerGroup = 1;
 
-            if (ReplacementCountPicker.SelectedIndex < 0)
-            {
-                ReplacementCountPicker.SelectedIndex = 0;
-                replacementCountPerGroup = 1;
-            }
+            ReplacementCountPicker.SelectedIndex = 0;
+            ReplacementCountPicker.IsEnabled = false;
 
             SaveSettings();
 
             UpdateOfficerDashboard();
+            UpdateGuideCards();
         }
         private void ReplacementCheckBox_Unchecked(
             object sender,
@@ -3657,14 +4517,15 @@ namespace HamedShahbazi.Win7
                 ReplacementReportGrid.ItemsSource =
                     null;
             }
-            SaveOfficerData();
-            SaveSettings();
-
             usedReplacementGuards.Clear();
             usedReplacementReserves.Clear();
             usedReplacementChiefs.Clear();
 
+            SaveOfficerData();
+            SaveSettings();
+
             UpdateOfficerDashboard();
+            UpdateGuideCards();
         }
         private void ReplacementCountPicker_SelectionChanged(
             object sender,
@@ -3692,8 +4553,8 @@ namespace HamedShahbazi.Win7
                 return;
             }
 
-            replacementCountPerGroup =
-                count;
+            replacementCountPerGroup = 1;
+            ReplacementCountPicker.SelectedIndex = 0;
 
             // با تغییر تعداد، چرخه از نو شروع شود
             usedReplacementGuards.Clear();
@@ -4556,6 +5417,94 @@ namespace HamedShahbazi.Win7
             }
         }
 
+        private bool TryMarkNewOfficerAsReplacement(
+            List<Officer> officers,
+            Officer officer,
+            string role)
+        {
+            if (officers == null ||
+                officer == null)
+            {
+                return false;
+            }
+
+            int programDays =
+                selectedProgramDays;
+
+            int currentCountBeforeAdd =
+                officers.Count;
+
+            // -----------------------------------------
+            // اگر جایگزین خاموش است:
+            // افزودن عادی
+            // -----------------------------------------
+            if (!useReplacementOfficers)
+            {
+                return true;
+            }
+
+            // -----------------------------------------
+            // فقط در حالتی که الان تعداد افراد
+            // دقیقاً برابر تعداد روزهاست، نفر بعدی
+            // می‌تواند نفر اضافه / جایگزین باشد.
+            // -----------------------------------------
+            if (currentCountBeforeAdd == programDays + 1)
+            {
+                MessageBox.Show(
+                    "در هر لیست حداکثر یک نیروی جایگزین مجاز است.",
+                    "افزودن نیرو",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+
+                return false;
+            }
+
+            if (currentCountBeforeAdd > programDays + 1)
+            {
+                return false;
+            }
+
+            if (currentCountBeforeAdd < programDays)
+            {
+                return true;
+            }
+
+            // نفر اضافه حتماً باید امتیاز ۲ باشد.
+            if (officer.Score != 2.0)
+            {
+                MessageBox.Show(
+                    "برای اضافه کردن نفر " +
+                    ToPersianNumber(programDays + 1) +
+                    " در " + role +
+                    "، امتیاز باید ۲ باشد؛ " +
+                    "زیرا این نفر به‌عنوان نیروی جایگزین ثبت می‌شود.",
+                    "افزودن نیروی جایگزین",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+
+                return false;
+            }
+
+            // -----------------------------------------
+            // اگر قبلاً در حالت برابر یک جایگزین
+            // خودکار انتخاب شده، آن را آزاد می‌کنیم.
+            // -----------------------------------------
+            foreach (Officer item in officers)
+            {
+                if (item != null &&
+                    item.IsReplacement)
+                {
+                    item.IsReplacement = false;
+                }
+            }
+
+            // نفر جدید، تنها نیروی اضافه و جایگزین است.
+            officer.IsReplacement = true;
+
+            return true;
+        }
+
+
         private void AddGuardOfficer_Click(
             object sender,
             RoutedEventArgs e)
@@ -4597,11 +5546,20 @@ namespace HamedShahbazi.Win7
             officer.Name = name;
             officer.Score = score;
 
+            if (!TryMarkNewOfficerAsReplacement(
+                guardOfficers,
+                officer,
+                "افسر پاسدار"))
+            {
+                return;
+            }
+
             guardOfficers.Add(officer);
 
             SaveOfficerData();
             RefreshOfficerLists();
             UpdateOfficerDashboard();
+            UpdateGuideCards();
 
             GuardOfficerEntry.Clear();
             GuardOfficerScorePicker.SelectedIndex = -1;
@@ -4655,11 +5613,20 @@ namespace HamedShahbazi.Win7
             officer.Name = name;
             officer.Score = score;
 
+            if (!TryMarkNewOfficerAsReplacement(
+                reserveOfficers,
+                officer,
+                "افسر جانشین"))
+            {
+                return;
+            }
+
             reserveOfficers.Add(officer);
 
             SaveOfficerData();
             RefreshOfficerLists();
             UpdateOfficerDashboard();
+            UpdateGuideCards();
 
             ReserveOfficerEntry.Clear();
             ReserveOfficerScorePicker.SelectedIndex = -1;
@@ -4712,11 +5679,20 @@ namespace HamedShahbazi.Win7
 
             officer.Name = name;
             officer.Score = score;
+            if (!TryMarkNewOfficerAsReplacement(
+                chiefOfficers,
+                officer,
+                "افسر سر"))
+            {
+                return;
+            }
+
             chiefOfficers.Add(officer);
 
             SaveOfficerData();
             RefreshOfficerLists();
             UpdateOfficerDashboard();
+            UpdateGuideCards();
 
             ChiefOfficerEntry.Clear();
             ChiefOfficerScorePicker.SelectedIndex = -1;
@@ -7095,9 +8071,9 @@ namespace HamedShahbazi.Win7
             OtherViews.Visibility =
                 Visibility.Visible;
 
-             //==========================================
-             //نمایش تاریخچه
-             //==========================================
+            //==========================================
+            //نمایش تاریخچه
+            //==========================================
 
             bool showHistory =
                 title == "تاریخچه برنامه‌ها";
@@ -7118,9 +8094,9 @@ namespace HamedShahbazi.Win7
                         : Visibility.Visible;
             }
 
-             //==========================================
-             //حالت اولیه آکاردئون مدیریت نیروها
-             //==========================================
+            //==========================================
+            //حالت اولیه آکاردئون مدیریت نیروها
+            //==========================================
 
             if (!showHistory)
             {
@@ -7161,9 +8137,9 @@ namespace HamedShahbazi.Win7
                 }
             }
 
-             //==========================================
-             //بارگذاری تاریخچه
-             //==========================================
+            //==========================================
+            //بارگذاری تاریخچه
+            //==========================================
 
             if (showHistory)
             {
@@ -8200,7 +9176,7 @@ namespace HamedShahbazi.Win7
 
                 SaveProgramHistory();
 
-                //LoadHistoryCards();
+                LoadHistoryCards();
 
                 UpdateDashboardStatistics();
 
@@ -8214,6 +9190,65 @@ namespace HamedShahbazi.Win7
             {
                 MessageBox.Show(
                     "خطا در حذف برنامه از تاریخچه:\n\n" +
+                    ex.ToString(),
+                    "خطای حذف تاریخچه",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+        private void DeleteAllHistory_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            try
+            {
+                if (savedPrograms == null ||
+                    savedPrograms.Count == 0)
+                {
+                    MessageBox.Show(
+                        "تاریخچه‌ای برای حذف وجود ندارد.",
+                        "تاریخچه برنامه‌ها",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+
+                    return;
+                }
+
+                MessageBoxResult result =
+                    MessageBox.Show(
+                        "آیا از حذف تمام برنامه‌های ذخیره‌شده در تاریخچه اطمینان دارید؟\n\n" +
+                        "تعداد برنامه‌ها: " +
+                        savedPrograms.Count +
+                        "\n\n" +
+                        "این عملیات قابل بازگشت نیست.",
+                        "حذف کل تاریخچه",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Warning);
+
+                if (result != MessageBoxResult.Yes)
+                    return;
+
+                // حذف همه برنامه‌ها از حافظه
+                savedPrograms.Clear();
+
+                // ذخیره تاریخچه خالی
+                SaveProgramHistory();
+
+                // بروزرسانی نمایش
+                LoadHistoryCards();
+                UpdateDashboardStatistics();
+
+                MessageBox.Show(
+                    "تمام تاریخچه برنامه‌ها با موفقیت حذف شد.",
+                    "حذف تاریخچه",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "خطا در حذف کل تاریخچه برنامه‌ها:\n\n" +
                     ex.ToString(),
                     "خطای حذف تاریخچه",
                     MessageBoxButton.OK,
